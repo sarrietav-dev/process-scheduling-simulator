@@ -11,7 +11,7 @@ class SJFStrategy implements SchedulingStrategy {
 	private attendedProcesses: Process[] = [];
 	private statsByProcess: ProcessStatistic[] = [];
 
-	run(): ProcessStatistic[] {
+	execute(): ProcessStatistic[] {
 		this.processes.forEach(() => {
 			const startTime = this.lastEndTime;
 

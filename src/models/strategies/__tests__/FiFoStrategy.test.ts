@@ -39,7 +39,7 @@ describe('The algorithm works correctly', () => {
 
 		const strategy = new FiFoStrategy(processes);
 
-		expect(strategy.run()).toEqual(solution);
+		expect(strategy.execute()).toEqual(solution);
 	});
 
 	test('when unordered', () => {
@@ -52,6 +52,6 @@ describe('The algorithm works correctly', () => {
 
 		const strategy = new FiFoStrategy(processes);
 
-		expect(strategy.run()).toEqual(solution);
+		expect(strategy.execute()).toEqual(solution);
 	});
 });

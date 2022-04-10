@@ -2,8 +2,7 @@ import type Process from './Process';
 
 export interface SchedulingStrategy {
 	processes: Process[];
-
-	run(): ProcessStatistic[];
+	execute(): ProcessStatistic[];
 }
 
 export interface ProcessStatistic {

@@ -11,7 +11,7 @@ class FiFoStrategy implements SchedulingStrategy {
 		this.processes = processes;
 	}
 
-	run(): ProcessStatistic[] {
+	execute(): ProcessStatistic[] {
 		this.processes.forEach(() => {
 			const startTime = this.lastEndTime;
 
