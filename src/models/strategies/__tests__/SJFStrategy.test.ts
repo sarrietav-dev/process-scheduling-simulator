@@ -55,3 +55,33 @@ describe('The algorithm works correctly', () => {
 		expect(strategy.execute()).toEqual(solution);
 	});
 });
+
+describe('When accessing waitTimeAverage property', () => {
+	const processes: Process[] = [
+		new Process('A', 3, 0),
+		new Process('B', 3, 1),
+		new Process('C', 2, 2),
+		new Process('D', 4, 4)
+	];
+
+	test('returns the correct value', () => {
+		const strategy = new SJFStrategy(processes);
+		strategy.execute();
+		expect(strategy.waitTimeAverage).toBe(2.25);
+	});
+
+	test("calls execute() when it wasn't called before", () => {
+		const strategy = new SJFStrategy(processes);
+		const executeSpy = jest.spyOn(strategy, 'execute');
+		expect(strategy.waitTimeAverage).toBe(2.25);
+		expect(executeSpy).toBeCalled();
+	});
+
+	test("doesn't call execute() when it was called before", () => {
+		const strategy = new SJFStrategy(processes);
+		strategy.execute();
+		const executeSpy = jest.spyOn(strategy, 'execute');
+		expect(strategy.waitTimeAverage).toBe(2.25);
+		expect(executeSpy).not.toBeCalled();
+	});
+});
