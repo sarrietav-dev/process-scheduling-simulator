@@ -17,6 +17,7 @@
     "@sveltejs/adapter-auto": "next",
     "@sveltejs/kit": "next",
     "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.181",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "autoprefixer": "^10.4.4",
@@ -42,5 +43,8 @@
     "transform": {
       "^.+\\.ts?$": "ts-jest"
     }
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
