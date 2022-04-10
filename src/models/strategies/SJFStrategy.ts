@@ -11,23 +11,6 @@ class SJFStrategy implements SchedulingStrategy {
 	private attendedProcesses: Process[] = [];
 	private statsByProcess: ProcessStatistic[] = [];
 
-	/**
-	 * Returns the processes that have been initialized in a certain timeframe.
-	 * @param currentTime timeframe upperbound
-	 * @private
-	 */
-	private spawnProcesses(currentTime: number): Process[] {
-		return this.processes.filter((process) => {
-			return process.arrivalTime <= currentTime;
-		});
-	}
-
-	private get lastEndTime() {
-		return this.statsByProcess.length === 0
-			? lodash.minBy(this.processes, 'arrivalTime').arrivalTime
-			: this.statsByProcess.at(-1).endTime;
-	}
-
 	run(): ProcessStatistic[] {
 		this.processes.forEach(() => {
 			const startTime = this.lastEndTime;
@@ -46,6 +29,23 @@ class SJFStrategy implements SchedulingStrategy {
 		});
 
 		return this.statsByProcess;
+	}
+
+	private get lastEndTime() {
+		return this.statsByProcess.length === 0
+			? lodash.minBy(this.processes, 'arrivalTime').arrivalTime
+			: this.statsByProcess.at(-1).endTime;
+	}
+
+	/**
+	 * Returns the processes that have been initialized in a certain timeframe.
+	 * @param currentTime timeframe upperbound
+	 * @private
+	 */
+	private spawnProcesses(currentTime: number): Process[] {
+		return this.processes.filter((process) => {
+			return process.arrivalTime <= currentTime;
+		});
 	}
 }
 

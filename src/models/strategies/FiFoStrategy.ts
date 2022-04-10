@@ -3,22 +3,12 @@ import type Process from '../Process';
 import lodash from 'lodash';
 
 class FiFoStrategy implements SchedulingStrategy {
-	constructor(processes: Process[]) {
-		this.processes = processes;
-	}
-
 	readonly processes: Process[];
 	private statsByProcess: ProcessStatistic[] = [];
 	private attendedProcesses: Process[] = [];
 
-	private get lastEndTime() {
-		return this.statsByProcess.length === 0
-			? lodash.minBy(this.processes, 'arrivalTime').arrivalTime
-			: this.statsByProcess.at(-1).endTime;
-	}
-
-	private get unattendedProcesses() {
-		return this.processes.filter((process) => !this.attendedProcesses.includes(process));
+	constructor(processes: Process[]) {
+		this.processes = processes;
 	}
 
 	run(): ProcessStatistic[] {
@@ -35,6 +25,16 @@ class FiFoStrategy implements SchedulingStrategy {
 		});
 
 		return this.statsByProcess;
+	}
+
+	private get lastEndTime() {
+		return this.statsByProcess.length === 0
+			? lodash.minBy(this.processes, 'arrivalTime').arrivalTime
+			: this.statsByProcess.at(-1).endTime;
+	}
+
+	private get unattendedProcesses() {
+		return this.processes.filter((process) => !this.attendedProcesses.includes(process));
 	}
 }
 
