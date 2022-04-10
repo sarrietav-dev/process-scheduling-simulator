@@ -1,17 +1,8 @@
 import Process from '../../Process';
 import FiFoStrategy from '../FiFoStrategy';
 
-it('works correctly', () => {
-	const processes: Process[] = [
-		new Process('A', 3, 0),
-		new Process('B', 3, 1),
-		new Process('C', 2, 2),
-		new Process('D', 4, 4)
-	];
-
-	const strategy = new FiFoStrategy(processes);
-
-	expect(strategy.run()).toEqual([
+describe('The algorithm works correctly', () => {
+	const solution = [
 		{
 			process: { name: 'A', cpuTime: 3, arrivalTime: 0 },
 			startTime: 0,
@@ -36,5 +27,31 @@ it('works correctly', () => {
 			endTime: 12,
 			waitTime: 4
 		}
-	]);
+	];
+
+	test('when ordered', () => {
+		const processes: Process[] = [
+			new Process('A', 3, 0),
+			new Process('B', 3, 1),
+			new Process('C', 2, 2),
+			new Process('D', 4, 4)
+		];
+
+		const strategy = new FiFoStrategy(processes);
+
+		expect(strategy.run()).toEqual(solution);
+	});
+
+	test('when unordered', () => {
+		const processes: Process[] = [
+			new Process('C', 2, 2),
+			new Process('B', 3, 1),
+			new Process('D', 4, 4),
+			new Process('A', 3, 0)
+		];
+
+		const strategy = new FiFoStrategy(processes);
+
+		expect(strategy.run()).toEqual(solution);
+	});
 });
