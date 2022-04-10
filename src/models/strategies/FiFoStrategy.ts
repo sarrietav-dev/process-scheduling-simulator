@@ -11,6 +11,11 @@ class FiFoStrategy implements SchedulingStrategy {
 		this.processes = processes;
 	}
 
+	get waitTimeAverage(): number {
+		if (!this.statsByProcess.length) this.execute();
+		return lodash.meanBy(this.statsByProcess, 'waitTime');
+	}
+
 	execute(): ProcessStatistic[] {
 		this.processes.forEach(() => {
 			const startTime = this.lastEndTime;
