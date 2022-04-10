@@ -8,7 +8,7 @@ class SJFStrategy implements SchedulingStrategy {
 	}
 
 	readonly processes: Process[];
-	private finishedProcesses: Process[] = [];
+	private attendedProcesses: Process[] = [];
 	private statsByProcess: ProcessStatistic[] = [];
 
 	/**
@@ -33,7 +33,7 @@ class SJFStrategy implements SchedulingStrategy {
 			const startTime = this.lastEndTime;
 
 			const unattendedProcesses = this.spawnProcesses(startTime).filter(
-				(process) => !this.finishedProcesses.includes(process)
+				(process) => !this.attendedProcesses.includes(process)
 			);
 
 			const shortestCpuTimeProcess = lodash.minBy(unattendedProcesses, 'cpuTime');
@@ -42,7 +42,7 @@ class SJFStrategy implements SchedulingStrategy {
 			const waitTime = startTime - shortestCpuTimeProcess.arrivalTime;
 
 			this.statsByProcess.push({ process: shortestCpuTimeProcess, startTime, endTime, waitTime });
-			this.finishedProcesses.push(shortestCpuTimeProcess);
+			this.attendedProcesses.push(shortestCpuTimeProcess);
 		});
 
 		return this.statsByProcess;
