@@ -1,4 +1,4 @@
-import type { SchedulingStrategy } from '../SchedulingStrategy';
+import type { ProcessStatistic, SchedulingStrategy } from '../SchedulingStrategy';
 import type Process from '../Process';
 
 class FiFoStrategy implements SchedulingStrategy {
@@ -8,7 +8,7 @@ class FiFoStrategy implements SchedulingStrategy {
 
 	readonly processes: Process[];
 
-	run(): { process: Process; startTime: number; endTime: number; waitTime: number }[] {
+	run(): ProcessStatistic[] {
 		let waitTimes: { process: Process; startTime: number; endTime: number; waitTime: number }[] =
 			[];
 
