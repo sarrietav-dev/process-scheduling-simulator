@@ -1,0 +1,48 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+!theme plain
+
+class Client
+
+hide Client members
+
+Store <|..up Client: <<uses>>
+
+class Store {
+    -strategy: SchedulingStrategy
+    +setStrategy(SchedulingStrategy): void
+}
+
+Store "1" o-- "1" SchedulingStrategy
+
+interface SchedulingStrategy {
+    processes: Process[]
+    execute(): ProcessStatistic[]
+}
+
+SchedulingStrategy "*" -- "1" Process
+
+class Process {
+    - name: string
+    - arrivalTime: number
+    - cpuTime: number
+}
+
+ProcessStatistic "1" o-- "1" Process
+SchedulingStrategy <|...right ProcessStatistic: <<uses>>
+
+interface ProcessStatistic {
+	- process: Process;
+	- startTime: number;
+	- endTime: number;
+	- waitTime: number;
+}
+
+class FifoStrategy implements SchedulingStrategy
+class SJFStrategy implements SchedulingStrategy
+class PriorityStrategy implements SchedulingStrategy
+hide FifoStrategy members
+hide SJFStrategy members
+hide PriorityStrategy members
+@enduml
