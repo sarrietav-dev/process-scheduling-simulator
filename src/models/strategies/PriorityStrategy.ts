@@ -21,7 +21,9 @@ class PriorityStrategy implements SchedulingStrategy {
 		this.processes.forEach(() => {
 			const startTime = this.lastEndTime;
 
-			const unattendedProcesses = this.spawnProcesses(startTime).filter(this.isProcessUnattended);
+			const unattendedProcesses = this.spawnProcesses(startTime).filter(
+				(process) => !this.attendedProcesses.includes(process)
+			);
 
 			const highestPriority = lodash.minBy(unattendedProcesses, 'priority').priority;
 
@@ -58,10 +60,6 @@ class PriorityStrategy implements SchedulingStrategy {
 		return this.processes.filter((process) => {
 			return process.arrivalTime <= currentTime;
 		});
-	}
-
-	private isProcessUnattended(process: Process) {
-		return !this.attendedProcesses.includes(process);
 	}
 }
 
