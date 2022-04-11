@@ -57,7 +57,18 @@ describe('The algorithm works correctly', () => {
 	});
 });
 
-test("")
+test('the average computes correctly', () => {
+	const processes: Process[] = [
+		new Process('P1', 5, 0, 1),
+		new Process('P2', 3, 1, 2),
+		new Process('P3', 8, 2, 1),
+		new Process('P4', 6, 3, 3)
+	];
+
+	const strategy = new PriorityStrategy(processes);
+
+	expect(strategy.waitTimeAverage).toBe(7);
+});
 
 test('throws an error when not defining a priority in a process', () => {
 	const processes: Process[] = [
