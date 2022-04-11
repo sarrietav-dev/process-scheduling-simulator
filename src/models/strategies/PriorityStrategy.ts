@@ -8,6 +8,7 @@ class PriorityStrategy implements SchedulingStrategy {
 	private attendedProcesses: Process[] = [];
 
 	get waitTimeAverage() {
+		if (!this.statsByProcess.length) this.execute();
 		return lodash.meanBy(this.statsByProcess, 'waitTime');
 	}
 
