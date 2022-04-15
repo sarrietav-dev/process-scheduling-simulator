@@ -75,17 +75,19 @@ let strategies = ref([
         />
       </TableBody>
       <AddProcessButton @click="addProcess" />
-      <label v-for="strategy in strategies" v-bind:key="strategy.name">
-        <input
-          type="radio"
-          name="strategy"
-          v-model="strategyChecked"
-          :value="strategy.name"
-          @click="strategy.onClick"
-          :checked="strategy.checked"
-        />
-        {{ strategy.name }}
-      </label>
+      <div class="flex justify-between">
+        <label v-for="strategy in strategies" v-bind:key="strategy.name">
+          <input
+            type="radio"
+            name="strategy"
+            v-model="strategyChecked"
+            :value="strategy.name"
+            @click="strategy.onClick"
+            :checked="strategy.checked"
+          />
+          {{ strategy.name }}
+        </label>
+      </div>
     </div>
   </main>
 </template>
