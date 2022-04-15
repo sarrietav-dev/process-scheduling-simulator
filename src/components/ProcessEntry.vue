@@ -1,20 +1,20 @@
 <template>
   <div class="grid grid-cols-3 gap-3 py-2.5">
     <input
-      class="transition transition-all rounded border-none h-full focus:ring-2"
+      class="h-full rounded border-none transition-all focus:ring-2"
       placeholder="Type a name"
       :value="name"
       @input="emitName"
       type="text"
     />
     <input
-      class="transition transition-all rounded border-none h-full focus:ring-2"
+      class="h-full rounded border-none transition-all focus:ring-2"
       placeholder="Type the arrival Time"
       v-model.number="arrivalTimeValue"
       type="number"
     />
     <input
-      class="transition transition-all rounded border-none h-full focus:ring-2"
+      class="h-full rounded border-none transition-all focus:ring-2"
       placeholder="Type the CPU Time"
       v-model.number="cpuTimeValue"
       type="number"
@@ -54,7 +54,7 @@ const cpuTimeValue = computed({
   },
 });
 
-function emitName(event: InputEvent) {
+function emitName(event: Event) {
   emit("update:name", (event.target as HTMLInputElement).value);
 }
 </script>

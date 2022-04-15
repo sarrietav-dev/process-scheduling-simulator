@@ -1,7 +1,17 @@
 <template>
   <div class="grid grid-cols-3">
-    <div class="font-bold text-center">Name</div>
-    <div class="font-bold text-center">Arrival Time</div>
-    <div class="font-bold text-center">CPU Time</div>
+    <div
+      v-for="header in headers"
+      v-bind:key="header"
+      class="text-center font-bold"
+    >
+      {{ header }}
+    </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+
+const headers = ref(["Name", "Arrival Time", "CPU Time"]);
+</script>

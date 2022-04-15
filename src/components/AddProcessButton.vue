@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-center col-span-3 bg-gray-300 border py-2.5 border-gray-600 border-dashed border-2 rounded-2xl"
+    class="col-span-3 rounded-2xl border-2 border-dashed border-gray-600 bg-gray-300 py-2.5 text-center"
   >
     Add new process
   </div>
