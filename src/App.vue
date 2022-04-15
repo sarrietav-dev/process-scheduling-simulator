@@ -15,7 +15,7 @@ const scheduler = useScheduler();
 
 function addProcess() {
   scheduler.$patch((state) => {
-    state.processes.push(new Process("", 0, 0));
+    state.processes.push(new Process("", 0, 0, 1));
     state.strategy.setProcesses(state.processes);
   });
 }
@@ -51,12 +51,7 @@ let strategies = ref([
     onClick: () =>
       scheduler.$patch((state) => ({
         ...state,
-        strategy: new PriorityStrategy(
-          state.processes.map((process, index) => ({
-            ...process,
-            priority: index + 1,
-          }))
-        ),
+        strategy: new PriorityStrategy(state.processes),
       })),
   },
 ]);
