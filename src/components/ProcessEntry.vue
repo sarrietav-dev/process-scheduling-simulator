@@ -30,6 +30,7 @@ const props = defineProps<{
   arrivalTime: number;
   cpuTime: number;
 }>();
+
 const emit = defineEmits([
   "update:name",
   "update:arrivalTime",

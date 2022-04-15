@@ -13,23 +13,40 @@ import PriorityStrategy from "./models/strategies/PriorityStrategy";
 
 const scheduler = useScheduler();
 
-let processes = ref([
-  new Process("A", 3, 0),
-  new Process("B", 3, 1),
-  new Process("C", 2, 2),
-  new Process("D", 4, 4),
-]);
-
 function addProcess() {
-  processes.value.push(new Process("", 0, 0));
+  scheduler.$patch((state) => {
+    state.processes.push(new Process("", 0, 0));
+    state.strategy.setProcesses(state.processes);
+  });
 }
 
+let strategyChecked = ref();
+
 let strategies = ref([
-  { name: "FiFo", onClick: () => scheduler.setStrategy(new FiFoStrategy()) },
-  { name: "SJF", onClick: () => scheduler.setStrategy(new SJFStrategy()) },
+  {
+    name: "FiFo",
+    checked: true,
+    onClick: () =>
+      scheduler.$patch((state) => ({
+        ...state,
+        strategy: new FiFoStrategy(state.processes),
+      })),
+  },
+  {
+    name: "SJF",
+    onClick: () =>
+      scheduler.$patch((state) => ({
+        ...state,
+        strategy: new SJFStrategy(state.processes),
+      })),
+  },
   {
     name: "Priority",
-    onClick: () => scheduler.setStrategy(new PriorityStrategy()),
+    onClick: () =>
+      scheduler.$patch((state) => ({
+        ...state,
+        strategy: new PriorityStrategy(state.processes),
+      })),
   },
 ]);
 </script>
@@ -42,7 +59,7 @@ let strategies = ref([
       <TableHeader />
       <TableBody>
         <ProcessEntry
-          v-for="process in processes"
+          v-for="process in scheduler.processes"
           v-bind:key="process.name"
           v-model:name="process.name"
           v-model:arrival-time.number="process.arrivalTime"
@@ -50,14 +67,17 @@ let strategies = ref([
         />
       </TableBody>
       <AddProcessButton @click="addProcess" />
-      <button
-        v-for="strategy in strategies"
-        v-bind:key="strategy.name"
-        @click="strategy.onClick"
-        class=""
-      >
+      <label v-for="strategy in strategies" v-bind:key="strategy.name">
+        <input
+          type="radio"
+          name="strategy"
+          v-model="strategyChecked"
+          :value="strategy.name"
+          @click="strategy.onClick"
+          :checked="strategy.checked"
+        />
         {{ strategy.name }}
-      </button>
+      </label>
     </div>
   </main>
 </template>

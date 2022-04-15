@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { SchedulingStrategy } from "@/models/SchedulingStrategy";
-import type Process from "@/models/Process";
+import Process from "@/models/Process";
 import FiFoStrategy from "@/models/strategies/FiFoStrategy";
 
 class Scheduler {
@@ -22,12 +22,22 @@ class Scheduler {
 export const useScheduler = defineStore({
   id: "scheduler",
   state: () => {
-    return new Scheduler(new FiFoStrategy());
+    return {
+      strategy: new FiFoStrategy([
+        new Process("A", 3, 0),
+        new Process("B", 3, 1),
+        new Process("C", 2, 2),
+        new Process("D", 4, 4),
+      ]),
+      processes: [
+        new Process("A", 3, 0),
+        new Process("B", 3, 1),
+        new Process("C", 2, 2),
+        new Process("D", 4, 4),
+      ],
+    };
   },
   actions: {
-    setProcesses(processes: Process[]) {
-      this.processes = processes;
-    },
     setStrategy(strategy: SchedulingStrategy) {
       this.strategy = strategy;
     },
