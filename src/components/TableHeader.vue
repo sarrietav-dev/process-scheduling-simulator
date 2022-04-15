@@ -13,5 +13,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+const props = defineProps<{ withPriority: boolean }>();
 const headers = ref(["Name", "Arrival Time", "CPU Time"]);
+if (props.withPriority) headers.value.push("Priority");
 </script>
