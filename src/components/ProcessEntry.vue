@@ -1,5 +1,8 @@
 <template>
-  <div class="grid grid-cols-3 gap-3 py-2.5">
+  <div
+    class="grid grid-cols-3 gap-3 py-2.5"
+    :class="{ 'grid-cols-4': $props.withPriority }"
+  >
     <input
       class="h-full rounded border-none transition-all focus:ring-2"
       placeholder="Type a name"
@@ -19,6 +22,14 @@
       v-model.number="cpuTimeValue"
       type="number"
     />
+    <template v-if="withPriority">
+      <input
+        class="h-full rounded border-none transition-all focus:ring-2"
+        placeholder="Type the CPU Time"
+        v-model.number="priorityValue"
+        type="number"
+      />
+    </template>
   </div>
 </template>
 
@@ -29,12 +40,15 @@ const props = defineProps<{
   name: string;
   arrivalTime: number;
   cpuTime: number;
+  withPriority: boolean;
+  priority?: number;
 }>();
 
 const emit = defineEmits([
   "update:name",
   "update:arrivalTime",
   "update:cpuTime",
+  "update:priority",
 ]);
 
 const arrivalTimeValue = computed({
@@ -52,6 +66,15 @@ const cpuTimeValue = computed({
   },
   set(value) {
     emit("update:cpuTime", value);
+  },
+});
+
+const priorityValue = computed({
+  get() {
+    return props.priority;
+  },
+  set(value) {
+    emit("update:priority", value);
   },
 });
 

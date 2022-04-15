@@ -5,7 +5,7 @@ import TableBody from "@/components/TableBody.vue";
 import TableHeader from "@/components/TableHeader.vue";
 import Process from "@/models/Process";
 import "./index.css";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useScheduler } from "./stores/scheduler";
 import FiFoStrategy from "./models/strategies/FiFoStrategy";
 import SJFStrategy from "./models/strategies/SJFStrategy";
@@ -21,6 +21,12 @@ function addProcess() {
 }
 
 let strategyChecked = ref();
+
+let withPriority = ref(false);
+
+watch(strategyChecked, (newValue) => {
+  withPriority.value = newValue === "Priority";
+});
 
 let strategies = ref([
   {
@@ -45,7 +51,12 @@ let strategies = ref([
     onClick: () =>
       scheduler.$patch((state) => ({
         ...state,
-        strategy: new PriorityStrategy(state.processes),
+        strategy: new PriorityStrategy(
+          state.processes.map((process, index) => ({
+            ...process,
+            priority: index + 1,
+          }))
+        ),
       })),
   },
 ]);
@@ -56,14 +67,16 @@ let strategies = ref([
     class="flex h-screen flex-col items-center justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
   >
     <div class="gap-2.5 rounded-2xl bg-white p-10 shadow">
-      <TableHeader />
+      <TableHeader :with-priority="withPriority" />
       <TableBody>
         <ProcessEntry
           v-for="process in scheduler.processes"
+          :with-priority="withPriority"
           v-bind:key="process.name"
           v-model:name="process.name"
           v-model:arrival-time.number="process.arrivalTime"
           v-model:cpu-time.number="process.cpuTime"
+          v-model:priority.number="process.priority"
         />
       </TableBody>
       <AddProcessButton @click="addProcess" />
