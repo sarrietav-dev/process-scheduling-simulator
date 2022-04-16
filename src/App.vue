@@ -2,7 +2,7 @@
   <main
     class="flex h-screen flex-col items-center justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
   >
-    <div class="" v-if="schedulePage"></div>
+    <ScheduleTable v-if="schedulePage" />
     <TheProcessInputTable v-else>
       <template #run-button>
         <div
@@ -20,6 +20,7 @@
 import "./index.css";
 import TheProcessInputTable from "@/components/TheProcessInputTable/TheProcessInputTable.vue";
 import { ref } from "vue";
+import ScheduleTable from "@/components/TheScheduleTable.vue";
 
 const schedulePage = ref(false);
 
