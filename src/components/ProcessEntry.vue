@@ -3,27 +3,19 @@
     class="grid grid-cols-3 gap-3 py-2.5"
     :class="{ 'grid-cols-4': $props.withPriority }"
   >
-    <input
-      class="h-full rounded border-none transition-all focus:ring-2"
-      placeholder="Type a name"
-      :value="name"
-      @input="emitName"
-      type="text"
-    />
-    <input
-      class="h-full rounded border-none transition-all focus:ring-2"
+    <ProcessInput placeholder="Type a name" v-model="nameValue" type="text" />
+    <ProcessInput
       placeholder="Type the arrival Time"
       v-model.number="arrivalTimeValue"
       type="number"
     />
-    <input
-      class="h-full rounded border-none transition-all focus:ring-2"
+    <ProcessInput
       placeholder="Type the CPU Time"
       v-model.number="cpuTimeValue"
       type="number"
     />
     <template v-if="withPriority">
-      <input
+      <ProcessInput
         class="h-full rounded border-none transition-all focus:ring-2"
         placeholder="Type the CPU Time"
         v-model.number="priorityValue"
@@ -35,6 +27,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import ProcessInput from "./ProcessInput.vue";
 
 const props = defineProps<{
   name: string;
@@ -78,7 +71,12 @@ const priorityValue = computed({
   },
 });
 
-function emitName(event: Event) {
-  emit("update:name", (event.target as HTMLInputElement).value);
-}
+const nameValue = computed({
+  get() {
+    return props.name;
+  },
+  set(value) {
+    emit("update:name", value);
+  },
+});
 </script>
