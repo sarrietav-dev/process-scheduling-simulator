@@ -20,6 +20,11 @@
         :strategies="strategies"
         v-model:strategyChecked="strategyChecked"
       />
+      <div
+        class="col-span-3 rounded-2xl border-2 border-green-600 bg-green-300 py-2.5 text-center"
+      >
+        Run scheduler
+      </div>
     </div>
   </main>
 </template>
@@ -45,6 +50,8 @@ function addProcess() {
     state.strategy.setProcesses(state.processes);
   });
 }
+
+const schedulePage = ref(false);
 
 let strategyChecked = ref();
 
