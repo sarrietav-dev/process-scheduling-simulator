@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import "./index.css";
-import TheProcessInputTable from "@/components/TheProcessInputTable.vue";
+import TheProcessInputTable from "@/components/TheProcessInputTable/TheProcessInputTable.vue";
 import { ref } from "vue";
 
 const schedulePage = ref(false);

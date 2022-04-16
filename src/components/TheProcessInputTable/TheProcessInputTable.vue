@@ -25,14 +25,14 @@
 import { ref, watch } from "vue";
 
 import "./index.css";
-import TheAddProcessButton from "@/components/TheAddProcessButton.vue";
-import ProcessEntry from "@/components/ProcessEntry.vue";
-import TheTableBody from "@/components/TheTableBody.vue";
-import TheTableHeader from "@/components/TheTableHeader.vue";
+import TheAddProcessButton from "@/components/TheProcessInputTable/components/TheAddProcessButton.vue";
+import ProcessEntry from "@/components/TheProcessInputTable/components/ProcessEntry.vue";
+import TheTableBody from "@/components/TheProcessInputTable/components/TheTableBody.vue";
+import TheTableHeader from "@/components/TheProcessInputTable/components/TheTableHeader.vue";
 import Process from "@/models/Process";
 import { useScheduler } from "@/stores/scheduler";
 import { getStrategies } from "@/utils/get-strategies";
-import TheStrategyList from "@/components/TheStrategyList.vue";
+import TheStrategyList from "@/components/TheProcessInputTable/components/TheStrategyList.vue";
 
 const scheduler = useScheduler();
 
