@@ -5,7 +5,7 @@ import TableBody from "@/components/TableBody.vue";
 import TableHeader from "@/components/TableHeader.vue";
 import Process from "@/models/Process";
 import "./index.css";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useScheduler } from "./stores/scheduler";
 import FiFoStrategy from "./models/strategies/FiFoStrategy";
 import SJFStrategy from "./models/strategies/SJFStrategy";
@@ -15,12 +15,18 @@ const scheduler = useScheduler();
 
 function addProcess() {
   scheduler.$patch((state) => {
-    state.processes.push(new Process("", 0, 0));
+    state.processes.push(new Process("", 0, 0, 1));
     state.strategy.setProcesses(state.processes);
   });
 }
 
 let strategyChecked = ref();
+
+let withPriority = ref(false);
+
+watch(strategyChecked, (newValue) => {
+  withPriority.value = newValue === "Priority";
+});
 
 let strategies = ref([
   {
@@ -56,28 +62,32 @@ let strategies = ref([
     class="flex h-screen flex-col items-center justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
   >
     <div class="gap-2.5 rounded-2xl bg-white p-10 shadow">
-      <TableHeader />
+      <TableHeader :with-priority="withPriority" />
       <TableBody>
         <ProcessEntry
           v-for="process in scheduler.processes"
+          :with-priority="withPriority"
           v-bind:key="process.name"
           v-model:name="process.name"
           v-model:arrival-time.number="process.arrivalTime"
           v-model:cpu-time.number="process.cpuTime"
+          v-model:priority.number="process.priority"
         />
       </TableBody>
       <AddProcessButton @click="addProcess" />
-      <label v-for="strategy in strategies" v-bind:key="strategy.name">
-        <input
-          type="radio"
-          name="strategy"
-          v-model="strategyChecked"
-          :value="strategy.name"
-          @click="strategy.onClick"
-          :checked="strategy.checked"
-        />
-        {{ strategy.name }}
-      </label>
+      <div class="flex justify-between">
+        <label v-for="strategy in strategies" v-bind:key="strategy.name">
+          <input
+            type="radio"
+            name="strategy"
+            v-model="strategyChecked"
+            :value="strategy.name"
+            @click="strategy.onClick"
+            :checked="strategy.checked"
+          />
+          {{ strategy.name }}
+        </label>
+      </div>
     </div>
   </main>
 </template>
