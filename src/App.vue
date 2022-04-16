@@ -1,13 +1,49 @@
+<template>
+  <main
+    class="flex h-screen flex-col items-center justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
+  >
+    <div class="gap-2.5 rounded-2xl bg-white p-10 shadow">
+      <TheTableHeader :with-priority="withPriority" />
+      <TheTableBody>
+        <ProcessEntry
+          v-for="process in scheduler.processes"
+          :with-priority="withPriority"
+          v-bind:key="process.name"
+          v-model:name="process.name"
+          v-model:arrival-time.number="process.arrivalTime"
+          v-model:cpu-time.number="process.cpuTime"
+          v-model:priority.number="process.priority"
+        />
+      </TheTableBody>
+      <TheAddProcessButton @click="addProcess" />
+      <div class="flex justify-between">
+        <label v-for="strategy in strategies" v-bind:key="strategy.name">
+          <input
+            type="radio"
+            name="strategy"
+            v-model="strategyChecked"
+            :value="strategy.name"
+            @click="strategy.onClick"
+            :checked="strategy.checked"
+          />
+          {{ strategy.name }}
+        </label>
+      </div>
+    </div>
+  </main>
+</template>
+
 <script setup lang="ts">
-import AddProcessButton from "@/components/AddProcessButton.vue";
-import ProcessEntry from "@/components/ProcessEntry.vue";
-import TableBody from "@/components/TableBody.vue";
-import TableHeader from "@/components/TableHeader.vue";
-import Process from "@/models/Process";
-import "./index.css";
 import { ref, watch } from "vue";
-import { useScheduler } from "./stores/scheduler";
-import { getStrategies } from "./utils/get-strategies";
+
+import "./index.css";
+import TheAddProcessButton from "@/components/TheAddProcessButton.vue";
+import ProcessEntry from "@/components/ProcessEntry.vue";
+import TheTableBody from "@/components/TheTableBody.vue";
+import TheTableHeader from "@/components/TheTableHeader.vue";
+import Process from "@/models/Process";
+import { useScheduler } from "@/stores/scheduler";
+import { getStrategies } from "@/utils/get-strategies";
 
 const scheduler = useScheduler();
 
@@ -28,38 +64,3 @@ watch(strategyChecked, (newValue) => {
 
 let strategies = ref(getStrategies(scheduler));
 </script>
-
-<template>
-  <main
-    class="flex h-screen flex-col items-center justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
-  >
-    <div class="gap-2.5 rounded-2xl bg-white p-10 shadow">
-      <TableHeader :with-priority="withPriority" />
-      <TableBody>
-        <ProcessEntry
-          v-for="process in scheduler.processes"
-          :with-priority="withPriority"
-          v-bind:key="process.name"
-          v-model:name="process.name"
-          v-model:arrival-time.number="process.arrivalTime"
-          v-model:cpu-time.number="process.cpuTime"
-          v-model:priority.number="process.priority"
-        />
-      </TableBody>
-      <AddProcessButton @click="addProcess" />
-      <div class="flex justify-between">
-        <label v-for="strategy in strategies" v-bind:key="strategy.name">
-          <input
-            type="radio"
-            name="strategy"
-            v-model="strategyChecked"
-            :value="strategy.name"
-            @click="strategy.onClick"
-            :checked="strategy.checked"
-          />
-          {{ strategy.name }}
-        </label>
-      </div>
-    </div>
-  </main>
-</template>
