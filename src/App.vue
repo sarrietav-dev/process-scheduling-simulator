@@ -16,19 +16,10 @@
         />
       </TheTableBody>
       <TheAddProcessButton @click="addProcess" />
-      <div class="flex justify-between">
-        <label v-for="strategy in strategies" v-bind:key="strategy.name">
-          <input
-            type="radio"
-            name="strategy"
-            v-model="strategyChecked"
-            :value="strategy.name"
-            @click="strategy.onClick"
-            :checked="strategy.checked"
-          />
-          {{ strategy.name }}
-        </label>
-      </div>
+      <TheStrategyList
+        :strategies="strategies"
+        v-model:strategyChecked="strategyChecked"
+      />
     </div>
   </main>
 </template>
@@ -44,6 +35,7 @@ import TheTableHeader from "@/components/TheTableHeader.vue";
 import Process from "@/models/Process";
 import { useScheduler } from "@/stores/scheduler";
 import { getStrategies } from "@/utils/get-strategies";
+import TheStrategyList from "@/components/TheStrategyList.vue";
 
 const scheduler = useScheduler();
 
