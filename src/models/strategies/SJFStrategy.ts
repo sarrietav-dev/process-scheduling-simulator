@@ -3,7 +3,7 @@ import type {
   SchedulingStrategy,
 } from "../SchedulingStrategy";
 import type Process from "../Process";
-import lodash from "lodash";
+import _ from "lodash";
 
 class SJFStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
@@ -20,7 +20,7 @@ class SJFStrategy implements SchedulingStrategy {
 
   get waitTimeAverage(): number {
     if (!this.statsByProcess.length) this.execute();
-    return lodash.meanBy(this.statsByProcess, "waitTime");
+    return _.meanBy(this.statsByProcess, "waitTime");
   }
 
   execute(): ProcessStatistic[] {
@@ -33,10 +33,7 @@ class SJFStrategy implements SchedulingStrategy {
         (process) => !this.attendedProcesses.includes(process)
       );
 
-      const shortestCpuTimeProcess = lodash.minBy(
-        unattendedProcesses,
-        "cpuTime"
-      );
+      const shortestCpuTimeProcess = _.minBy(unattendedProcesses, "cpuTime");
 
       if (shortestCpuTimeProcess === undefined) throw Error();
 
@@ -57,8 +54,8 @@ class SJFStrategy implements SchedulingStrategy {
 
   private get lastEndTime() {
     return this.statsByProcess.length === 0
-      ? lodash.minBy(this._processes, "arrivalTime")?.arrivalTime
-      : this.statsByProcess.at(-1)?.endTime;
+      ? _.minBy(this._processes, "arrivalTime")?.arrivalTime
+      : _.last(this.statsByProcess)?.endTime;
   }
 
   /**
