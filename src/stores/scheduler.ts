@@ -3,22 +3,6 @@ import type { SchedulingStrategy } from "@/models/SchedulingStrategy";
 import Process from "@/models/Process";
 import FiFoStrategy from "@/models/strategies/FiFoStrategy";
 
-class Scheduler {
-  constructor(private _strategy: SchedulingStrategy) {}
-
-  set strategy(value: SchedulingStrategy) {
-    this._strategy = value;
-  }
-
-  set processes(processes: Process[]) {
-    this._strategy.setProcesses(processes);
-  }
-
-  runScheduler() {
-    return this._strategy.execute();
-  }
-}
-
 export const useScheduler = defineStore({
   id: "scheduler",
   state: () => {
