@@ -24,7 +24,6 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 
-import "./index.css";
 import TheAddProcessButton from "@/components/TheProcessInputTable/components/TheAddProcessButton.vue";
 import ProcessEntry from "@/components/TheProcessInputTable/components/ProcessEntry.vue";
 import TheTableBody from "@/components/TheProcessInputTable/components/TheTableBody.vue";
@@ -49,6 +48,7 @@ let withPriority = ref(false);
 
 watch(strategyChecked, (newValue) => {
   withPriority.value = newValue === "Priority";
+  // TODO: Patch setStrategy
 });
 
 let strategies = ref(getStrategies(scheduler));
