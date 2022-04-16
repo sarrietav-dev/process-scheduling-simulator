@@ -7,9 +7,7 @@ import Process from "@/models/Process";
 import "./index.css";
 import { ref, watch } from "vue";
 import { useScheduler } from "./stores/scheduler";
-import FiFoStrategy from "./models/strategies/FiFoStrategy";
-import SJFStrategy from "./models/strategies/SJFStrategy";
-import PriorityStrategy from "./models/strategies/PriorityStrategy";
+import { getStrategies } from "./utils/get-strategies";
 
 const scheduler = useScheduler();
 
@@ -28,33 +26,7 @@ watch(strategyChecked, (newValue) => {
   withPriority.value = newValue === "Priority";
 });
 
-let strategies = ref([
-  {
-    name: "FiFo",
-    checked: true,
-    onClick: () =>
-      scheduler.$patch((state) => ({
-        ...state,
-        strategy: new FiFoStrategy(state.processes),
-      })),
-  },
-  {
-    name: "SJF",
-    onClick: () =>
-      scheduler.$patch((state) => ({
-        ...state,
-        strategy: new SJFStrategy(state.processes),
-      })),
-  },
-  {
-    name: "Priority",
-    onClick: () =>
-      scheduler.$patch((state) => ({
-        ...state,
-        strategy: new PriorityStrategy(state.processes),
-      })),
-  },
-]);
+let strategies = ref(getStrategies(scheduler));
 </script>
 
 <template>
