@@ -26,4 +26,7 @@ export const useScheduler = defineStore({
       this.strategy = strategy;
     },
   },
+  getters: {
+    execute: (state) => state.strategy.execute(),
+  },
 });
