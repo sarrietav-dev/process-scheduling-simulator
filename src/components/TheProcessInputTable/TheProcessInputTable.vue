@@ -60,6 +60,9 @@ import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
+import PriorityStrategy from "@/models/strategies/PriorityStrategy";
+import FiFoStrategy from "@/models/strategies/FiFoStrategy";
+import SJFStrategy from "@/models/strategies/SJFStrategy";
 
 const scheduler = useScheduler();
 
@@ -107,15 +110,42 @@ let strategyChecked = ref();
 
 let withPriority = ref(false);
 
-watch(strategyChecked, (newValue) => {
-  withPriority.value = newValue === "Priority";
-  // TODO: Patch setStrategy
-});
-
 const selectedStrategy = ref("");
 const strategies = ref([
   { name: "FiFo" },
   { name: "SJF" },
   { name: "Priority" },
 ]);
+
+watch(selectedStrategy, (newValue) => {
+  switch (newValue) {
+    case "Priority":
+      columns.value.push({
+        header: "Priority",
+        field: "priority",
+        component: InputNumber,
+      });
+
+      scheduler.$patch((state) => {
+        state.strategy = new PriorityStrategy(state.processes);
+      });
+      break;
+    case "FiFo":
+      columns.value = columns.value.filter(
+        (column) => column.field !== "priority"
+      );
+      scheduler.$patch((state) => {
+        state.strategy = new FiFoStrategy(state.processes);
+      });
+      break;
+    case "SJF":
+      columns.value = columns.value.filter(
+        (column) => column.field !== "priority"
+      );
+      scheduler.$patch((state) => {
+        state.strategy = new SJFStrategy(state.processes);
+      });
+      break;
+  }
+});
 </script>
