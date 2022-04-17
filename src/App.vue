@@ -1,6 +1,6 @@
 <template>
   <main
-    class="flex h-screen flex-col items-center justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
+    class="flex h-screen flex-col justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
   >
     <ScheduleTable v-if="schedulePage" />
     <TheProcessInputTable v-else>
