@@ -27,6 +27,15 @@ export const useScheduler = defineStore({
     },
   },
   getters: {
-    execute: (state) => state.strategy.execute(),
+    execute: (state) =>
+      state.strategy.execute().map((stat) => ({
+        name: stat.process.name,
+        arrivalTime: stat.process.arrivalTime,
+        cpuTime: stat.process.cpuTime,
+        priority: stat.process.priority,
+        startTime: stat.startTime,
+        endTime: stat.endTime,
+        waitTime: stat.waitTime,
+      })),
   },
 });
