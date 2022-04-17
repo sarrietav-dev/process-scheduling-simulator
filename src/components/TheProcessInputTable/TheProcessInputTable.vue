@@ -19,7 +19,7 @@
                 optionLabel="name"
                 optionValue="name"
               />
-              <Button class="p-button-success">Run scheduler</Button>
+              <slot name="run-button"></slot>
             </div>
             <Button class="p-button-info" style="width: 25%"
               >Add process</Button
@@ -52,7 +52,6 @@ import { ref, watch } from "vue";
 
 import Process from "@/models/Process";
 import { useScheduler } from "@/stores/scheduler";
-import { getStrategies } from "@/utils/get-strategies";
 
 import DataTable, { type DataTableRowEditSaveEvent } from "primevue/datatable";
 import Column from "primevue/column";

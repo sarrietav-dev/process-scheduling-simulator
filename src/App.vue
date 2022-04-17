@@ -5,12 +5,9 @@
     <ScheduleTable v-if="schedulePage" />
     <TheProcessInputTable v-else>
       <template #run-button>
-        <div
-          class="col-span-3 rounded-2xl border-2 border-green-600 bg-green-300 py-2.5 text-center"
-          @click="showSchedule"
+        <Button class="p-button-success" @click="showSchedule"
+          >Run scheduler</Button
         >
-          Run scheduler
-        </div>
       </template>
     </TheProcessInputTable>
   </main>
@@ -21,6 +18,7 @@ import "./index.css";
 import TheProcessInputTable from "@/components/TheProcessInputTable/TheProcessInputTable.vue";
 import { ref } from "vue";
 import ScheduleTable from "@/components/TheScheduleTable.vue";
+import Button from "primevue/button";
 
 const schedulePage = ref(false);
 
