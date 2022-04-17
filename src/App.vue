@@ -2,7 +2,7 @@
   <main
     class="flex h-screen flex-col justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
   >
-    <ScheduleTable v-if="schedulePage" />
+    <ScheduleTable class="m-24" v-if="schedulePage" />
     <TheProcessInputTable v-else>
       <template #run-button>
         <Button class="p-button-success" @click="showSchedule"
