@@ -6,7 +6,8 @@
         edit-mode="row"
         data-key="name"
         v-model:editing-rows="editingRows"
-        scroll-height="flex"
+        scrollable
+        scroll-height="320px"
         responsive-layout="scroll"
         @row-edit-save="handleRowEdit"
       >
@@ -21,7 +22,7 @@
               />
               <slot name="run-button"></slot>
             </div>
-            <Button class="p-button-info" style="width: 25%"
+            <Button class="p-button-info" style="width: 25%" @click="addProcess"
               >Add process</Button
             >
           </div>
