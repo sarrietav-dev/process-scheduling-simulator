@@ -10,6 +10,22 @@
         responsive-layout="scroll"
         @row-edit-save="handleRowEdit"
       >
+        <template #header>
+          <div class="flex justify-between">
+            <div class="flex gap-5">
+              <Dropdown
+                v-model="selectedStrategy"
+                :options="strategies"
+                optionLabel="name"
+                optionValue="name"
+              />
+              <Button class="p-button-success">Run scheduler</Button>
+            </div>
+            <Button class="p-button-info" style="width: 25%"
+              >Add process</Button
+            >
+          </div>
+        </template>
         <Column
           v-for="column in columns"
           :field="column.field"
@@ -42,6 +58,8 @@ import DataTable, { type DataTableRowEditSaveEvent } from "primevue/datatable";
 import Column from "primevue/column";
 import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
+import Dropdown from "primevue/dropdown";
+import Button from "primevue/button";
 
 const scheduler = useScheduler();
 
@@ -94,5 +112,10 @@ watch(strategyChecked, (newValue) => {
   // TODO: Patch setStrategy
 });
 
-let strategies = ref(getStrategies(scheduler));
+const selectedStrategy = ref("");
+const strategies = ref([
+  { name: "FiFo" },
+  { name: "SJF" },
+  { name: "Priority" },
+]);
 </script>
