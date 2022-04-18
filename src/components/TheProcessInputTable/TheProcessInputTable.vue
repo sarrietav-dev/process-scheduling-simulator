@@ -107,10 +107,6 @@ function addProcess() {
   });
 }
 
-let strategyChecked = ref();
-
-let withPriority = ref(false);
-
 const selectedStrategy = ref("");
 const strategies = ref([
   { name: "FiFo" },
