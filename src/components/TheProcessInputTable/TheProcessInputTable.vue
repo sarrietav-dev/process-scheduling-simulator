@@ -19,6 +19,7 @@
                 :options="strategies"
                 optionLabel="name"
                 optionValue="name"
+                placeholder="Schedule Strategy"
               />
               <slot name="run-button"></slot>
             </div>
