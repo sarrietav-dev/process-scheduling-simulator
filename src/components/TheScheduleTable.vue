@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <DataTable :value="scheduler.execute" responsive-layout="scroll">
+    <DataTable :value="scheduler.execute" responsive-layout="scroll" scrollable>
       <Column header="Name" field="name"></Column>
       <Column header="ArrivalTime" field="arrivalTime"></Column>
       <Column header="CPU Time" field="cpuTime"></Column>
