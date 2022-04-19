@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <DataTable :value="scheduler.execute" responsive-layout="scroll" scrollable>
+    <DataTable :value="stats" responsive-layout="scroll" scrollable>
       <Column header="Name" field="name"></Column>
       <Column header="ArrivalTime" field="arrivalTime"></Column>
       <Column header="CPU Time" field="cpuTime"></Column>
@@ -13,9 +13,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useScheduler } from "@/stores/scheduler";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
 
-const scheduler = useScheduler();
+defineProps(["stats"]);
 </script>
