@@ -7,13 +7,13 @@
         data-key="name"
         v-model:editing-rows="editingRows"
         scrollable
-        scroll-height="320px"
+        scroll-height="350px"
         responsive-layout="scroll"
         @row-edit-save="handleRowEdit"
       >
         <template #header>
-          <div class="flex justify-between">
-            <div class="flex gap-5">
+          <div class="flex flex-col justify-between gap-5 sm:flex-row sm:gap-0">
+            <div class="flex flex-col gap-5 sm:flex-row">
               <Dropdown
                 v-model="selectedStrategy"
                 :options="strategies"
@@ -23,7 +23,10 @@
               />
               <slot name="run-button"></slot>
             </div>
-            <Button class="p-button-info" style="width: 25%" @click="addProcess"
+            <Button
+              id="add-process-button"
+              class="p-button-info w-1/4 grow sm:grow-0"
+              @click="addProcess"
               >Add process</Button
             >
           </div>
@@ -146,3 +149,11 @@ watch(selectedStrategy, (newValue) => {
   }
 });
 </script>
+
+<style>
+@media (min-width: 640px) {
+  #add-process-button {
+    width: 25%;
+  }
+}
+</style>
