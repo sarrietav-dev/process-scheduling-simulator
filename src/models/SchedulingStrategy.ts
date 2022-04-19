@@ -8,7 +8,7 @@ export interface SchedulingStrategy {
 
 export interface ProcessStatistic {
   process: Process;
-  startTime: number;
-  endTime: number;
+  startTime: number | number[];
+  endTime: number | number[];
   waitTime: number;
 }

@@ -27,7 +27,7 @@ class SJFStrategy implements SchedulingStrategy {
     this._processes.forEach(() => {
       const startTime = this.lastEndTime;
 
-      if (startTime === undefined) throw Error();
+      if (startTime === undefined || Array.isArray(startTime)) throw Error();
 
       const unattendedProcesses = this.spawnProcesses(startTime).filter(
         (process) => !this.attendedProcesses.includes(process)

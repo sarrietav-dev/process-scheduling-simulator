@@ -27,7 +27,7 @@ class FiFoStrategy implements SchedulingStrategy {
     this._processes.forEach(() => {
       const startTime = this.lastEndTime;
 
-      if (startTime === undefined) throw Error();
+      if (startTime === undefined || Array.isArray(startTime)) throw Error();
 
       const process = _.minBy(this.unattendedProcesses, "arrivalTime");
 
