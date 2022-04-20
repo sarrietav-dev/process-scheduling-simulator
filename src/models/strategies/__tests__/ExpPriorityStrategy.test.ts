@@ -7,28 +7,28 @@ import { describe, test, expect } from "vitest";
 describe("The algorithm works correctly", () => {
   const results: ProcessStatistic[] = [
     {
-      process: new Process("P2", 3, 2, 1),
-      startTime: [2],
-      endTime: [5],
-      waitTime: 0,
+      process: new Process("P1", 4, 0, 3),
+      startTime: [0, 11],
+      endTime: [2, 12],
+      waitTime: 9,
     },
     {
-      process: new Process("P4", 4, 6, 1),
-      startTime: [6],
-      endTime: [10],
+      process: new Process("P2", 3, 2, 1),
+      startTime: [2],
+      endTime: [4],
       waitTime: 0,
     },
     {
       process: new Process("P3", 2, 4, 2),
-      startTime: [10],
-      endTime: [12],
-      waitTime: 6,
+      startTime: [5, 10],
+      endTime: [6, 10],
+      waitTime: 5,
     },
     {
-      process: new Process("P1", 4, 0, 3),
-      startTime: [0, 12],
-      endTime: [2, 14],
-      waitTime: 10,
+      process: new Process("P4", 4, 6, 1),
+      startTime: [6],
+      endTime: [9],
+      waitTime: 0,
     },
   ];
 
