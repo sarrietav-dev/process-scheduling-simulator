@@ -8,20 +8,20 @@ describe("The algorithm works correctly", () => {
   const results: ProcessStatistic[] = [
     {
       process: new Process("P2", 3, 2, 1),
-      startTime: 2,
-      endTime: 5,
+      startTime: [2],
+      endTime: [5],
       waitTime: 0,
     },
     {
       process: new Process("P4", 4, 6, 1),
-      startTime: 6,
-      endTime: 10,
+      startTime: [6],
+      endTime: [10],
       waitTime: 0,
     },
     {
       process: new Process("P3", 2, 4, 2),
-      startTime: 10,
-      endTime: 12,
+      startTime: [10],
+      endTime: [12],
       waitTime: 6,
     },
     {
