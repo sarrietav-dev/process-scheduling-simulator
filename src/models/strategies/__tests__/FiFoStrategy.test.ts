@@ -1,5 +1,6 @@
 import Process from "../../Process";
 import FiFoStrategy from "../FiFoStrategy";
+import { describe, test, expect, vi } from "vitest";
 
 describe("The algorithm works correctly", () => {
   const solution = [
@@ -72,7 +73,7 @@ describe("When accessing waitTimeAverage property", () => {
 
   test("calls execute() when it wasn't called before", () => {
     const strategy = new FiFoStrategy(processes);
-    const executeSpy = jest.spyOn(strategy, "execute");
+    const executeSpy = vi.spyOn(strategy, "execute");
     strategy.waitTimeAverage;
     expect(executeSpy).toBeCalled();
   });
@@ -80,7 +81,7 @@ describe("When accessing waitTimeAverage property", () => {
   test("doesn't call execute() when it was called before", () => {
     const strategy = new FiFoStrategy(processes);
     strategy.execute();
-    const executeSpy = jest.spyOn(strategy, "execute");
+    const executeSpy = vi.spyOn(strategy, "execute");
     strategy.waitTimeAverage;
     expect(executeSpy).not.toBeCalled();
   });

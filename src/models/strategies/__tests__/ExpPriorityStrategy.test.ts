@@ -2,6 +2,7 @@ import Process from "../../Process";
 import PriorityStrategy from "../PriorityStrategy";
 import type { ProcessStatistic } from "../../SchedulingStrategy";
 import ExpPriorityStrategy from "../ExpPriorityStrategy";
+import { describe, test, expect } from "vitest";
 
 describe("The algorithm works correctly", () => {
   const results: ProcessStatistic[] = [
