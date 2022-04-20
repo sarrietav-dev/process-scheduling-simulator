@@ -64,6 +64,11 @@ class ExpPriorityStrategy implements SchedulingStrategy {
         (stat) => stat.process === highestPriorityProcess
       )!;
 
+      // If first time running
+      if (currentProcessStats.startTime.length === 0) {
+        currentProcessStats.startTime.push(this.tick);
+      }
+
       // Add another start time if the process was suspended before.
       if (currentProcessStats.endTime.length > 0) {
         currentProcessStats?.startTime.push(this.tick);
@@ -72,6 +77,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
       const remainingTime = this.decreaseRemainingTime(highestPriorityProcess);
 
       if (remainingTime === 0) {
+        // FIXME: waitTime === NaN
         currentProcessStats.waitTime = this.calculateWaitTimeOfProcess(
           highestPriorityProcess
         );
