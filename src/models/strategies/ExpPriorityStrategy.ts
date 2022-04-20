@@ -54,19 +54,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
 
       if (lastAttendedProcess) {
         if (highestPriorityProcess.name !== lastAttendedProcess.name) {
-          const lastAttendedProcessIndex = this.processStatistics.findIndex(
-            (statistic) => statistic.process.name === lastAttendedProcess?.name
-          );
-
-          // TODO: Populate processStatistics
-          //    - Keep track of the last process attended, and add the current tick to their endTime Arra
-          //    - Append their startTimes
-
-          // FIXME: Make endTime an array
-          // this.processStatistics[lastAttendedProcessIndex].endTime = [
-          //   ...this.processStatistics[lastAttendedProcessIndex].endTime,
-          //   this.tick,
-          // ];
+          this.addStopToPreviousProcess(lastAttendedProcess);
         }
       }
 
@@ -111,6 +99,17 @@ class ExpPriorityStrategy implements SchedulingStrategy {
     }
 
     return highestPriorityProcess;
+  }
+
+  private addStopToPreviousProcess(lastAttendedProcess: Process) {
+    const lastAttendedProcessIndex = this.processStatistics.findIndex(
+      (statistic) => statistic.process.name === lastAttendedProcess?.name
+    );
+
+    this.processStatistics[lastAttendedProcessIndex].endTime = [
+      ...this.processStatistics[lastAttendedProcessIndex].endTime,
+      this.tick,
+    ];
   }
 
   private decreaseRemainingTime(process: Process) {
