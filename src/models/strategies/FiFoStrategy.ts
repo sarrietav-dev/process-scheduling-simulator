@@ -4,9 +4,7 @@ import type {
 } from "../SchedulingStrategy";
 import type Process from "../Process";
 import _ from "lodash";
-import { type } from "os";
 import { narrowNumber } from "@/utils/narrowNumber";
-import { start } from "repl";
 
 class FiFoStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
