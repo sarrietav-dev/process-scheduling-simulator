@@ -5,6 +5,8 @@ import type {
 } from "../SchedulingStrategy";
 import _ from "lodash";
 
+// TODO: Refactor processStatistics to be better iterable.
+
 class ExpPriorityStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
   private processStatistics: ProcessStatistic[] = [];
@@ -44,7 +46,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   execute(): ProcessStatistic[] {
     let lastAttendedProcess: Process | undefined;
 
-    while (this.unattendedProcesses.length !== 0) {
+    while (this.unattendedProcesses.length !== this._processes.length) {
       const spawnProcesses = this.getSpawnProcesses();
 
       const unattendedProcesses = this.getUnattendedProcesses(spawnProcesses);
