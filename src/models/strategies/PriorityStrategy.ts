@@ -6,7 +6,6 @@ import type Process from "../Process";
 import _ from "lodash";
 import { narrowNumber } from "@/utils/narrowNumber";
 
-
 class PriorityStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
   private statsByProcess: ProcessStatistic[] = [];

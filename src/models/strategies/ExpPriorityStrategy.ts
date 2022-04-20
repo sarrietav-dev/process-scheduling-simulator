@@ -53,15 +53,24 @@ class ExpPriorityStrategy implements SchedulingStrategy {
         this.getHighestPriority(unattendedProcesses);
 
       if (lastAttendedProcess) {
-        if (highestPriorityProcess.name !== lastAttendedProcess.name) {
+        if (highestPriorityProcess !== lastAttendedProcess) {
           this.addStopToPreviousProcess(lastAttendedProcess);
         }
+      }
+
+      const currentProcessStats = this.processStatistics.find(
+        (stat) => stat.process === highestPriorityProcess
+      );
+
+      // Add another start time if the process was suspended before.
+      if (currentProcessStats!.endTime.length > 0) {
+        currentProcessStats?.startTime.push(this.tick);
       }
 
       const remainingTime = this.decreaseRemainingTime(highestPriorityProcess);
 
       if (remainingTime === 0) {
-        // TODO: Calculate the watTime here
+        // TODO: Calculate the waitTime here
         this.unattendedProcesses.push(highestPriorityProcess);
       }
 
