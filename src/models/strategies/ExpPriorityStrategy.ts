@@ -5,7 +5,7 @@ import type {
 } from "../SchedulingStrategy";
 import _ from "lodash";
 
-// TODO: Refactor processStatistics to be better iterable.
+// TODO: Refactor processStatistics and remainingCPUTimeTracker to be better acceced.
 
 class ExpPriorityStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
@@ -55,7 +55,14 @@ class ExpPriorityStrategy implements SchedulingStrategy {
         this.getHighestPriority(unattendedProcesses);
 
       if (lastAttendedProcess) {
-        if (highestPriorityProcess !== lastAttendedProcess) {
+        if (
+          highestPriorityProcess !== lastAttendedProcess &&
+          this.remainingCPUTimeTracker[
+            this.remainingCPUTimeTracker.findIndex(
+              (tracker) => tracker.processName === lastAttendedProcess!.name
+            )
+          ].remainingCpuTime > 0
+        ) {
           this.addStopToPreviousProcess(lastAttendedProcess);
         }
       }
@@ -77,7 +84,8 @@ class ExpPriorityStrategy implements SchedulingStrategy {
       const remainingTime = this.decreaseRemainingTime(highestPriorityProcess);
 
       if (remainingTime === 0) {
-        // FIXME: waitTime === NaN
+        currentProcessStats.endTime.push(this.tick);
+
         currentProcessStats.waitTime = this.calculateWaitTimeOfProcess(
           highestPriorityProcess
         );
