@@ -60,17 +60,20 @@ class ExpPriorityStrategy implements SchedulingStrategy {
 
       const currentProcessStats = this.processStatistics.find(
         (stat) => stat.process === highestPriorityProcess
-      );
+      )!;
 
       // Add another start time if the process was suspended before.
-      if (currentProcessStats!.endTime.length > 0) {
+      if (currentProcessStats.endTime.length > 0) {
         currentProcessStats?.startTime.push(this.tick);
       }
 
       const remainingTime = this.decreaseRemainingTime(highestPriorityProcess);
 
       if (remainingTime === 0) {
-        // TODO: Calculate the waitTime here
+        currentProcessStats.waitTime = this.calculateWaitTimeOfProcess(
+          highestPriorityProcess
+        );
+
         this.unattendedProcesses.push(highestPriorityProcess);
       }
 
@@ -129,9 +132,34 @@ class ExpPriorityStrategy implements SchedulingStrategy {
     return --this.remainingCPUTimeTracker[processTrackerIndex].remainingCpuTime;
   }
 
+  private calculateWaitTimeOfProcess(process: Process) {
+    const processStats = this.processStatistics.find(
+      (stat) => stat.process === process
+    )!;
+
+    const initialWaitTime = process.arrivalTime - processStats.startTime[0];
+
+    // Has the process been suspended before?
+    if (processStats.endTime.length > 1) {
+      const startTimesWithoutFirst = processStats.startTime.slice(1);
+
+      const suspendedWaitTimes = startTimesWithoutFirst.reduce(
+        (prev, current, index) =>
+          prev + (current + processStats.endTime[index]),
+        0
+      );
+
+      return initialWaitTime + suspendedWaitTimes;
+    }
+
+    return initialWaitTime;
+  }
+
   private nextTick() {
     this.tick++;
   }
 }
+
+// 0, 4, 8 / 2, 6, 9
 
 export default ExpPriorityStrategy;
