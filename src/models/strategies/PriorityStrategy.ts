@@ -4,6 +4,8 @@ import type {
 } from "../SchedulingStrategy";
 import type Process from "../Process";
 import _ from "lodash";
+import { narrowNumber } from "@/utils/narrowNumber";
+import { start } from "repl";
 
 class PriorityStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
@@ -36,11 +38,11 @@ class PriorityStrategy implements SchedulingStrategy {
     this._processes.forEach(() => {
       const startTime = this.lastEndTime;
 
-      if (startTime === undefined || Array.isArray(startTime)) throw Error();
+      if (startTime === undefined) throw Error();
 
-      const unattendedProcesses = this.spawnProcesses(startTime).filter(
-        (process) => !this.attendedProcesses.includes(process)
-      );
+      const unattendedProcesses = this.spawnProcesses(
+        narrowNumber(startTime)
+      ).filter((process) => !this.attendedProcesses.includes(process));
 
       const highestPriority = _.minBy(
         unattendedProcesses,
@@ -57,13 +59,14 @@ class PriorityStrategy implements SchedulingStrategy {
 
       if (highestPriorityProcess === undefined) throw Error();
 
-      const endTime = startTime + highestPriorityProcess.cpuTime;
-      const waitTime = startTime - highestPriorityProcess.arrivalTime;
+      const endTime = narrowNumber(startTime) + highestPriorityProcess.cpuTime;
+      const waitTime =
+        narrowNumber(startTime) - highestPriorityProcess.arrivalTime;
 
       this.statsByProcess.push({
         process: highestPriorityProcess,
-        startTime,
-        endTime,
+        startTime: [narrowNumber(startTime)],
+        endTime: [narrowNumber(endTime)],
         waitTime,
       });
       this.attendedProcesses.push(highestPriorityProcess);
