@@ -39,6 +39,6 @@ describe("TheScheduleTable component", () => {
 
     const elements = wrapper.queryAllByText(/\[.+\]/);
 
-    expect(elements.length).toBe(0);
+    expect(elements.length).toBeGreaterThan(0);
   });
 });
