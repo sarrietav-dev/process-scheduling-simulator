@@ -7,14 +7,14 @@ describe("The algorithm works correctly", () => {
   const results: ProcessStatistic[] = [
     {
       process: new Process("P1", 4, 0, 3),
-      startTime: [0, 10],
+      startTime: [0, 12],
       endTime: [2, 12],
       waitTime: 9,
     },
     {
       process: new Process("P2", 3, 2, 1),
-      startTime: [2],
-      endTime: [4],
+      startTime: [2, 11],
+      endTime: [4, 11],
       waitTime: 0,
     },
     {
