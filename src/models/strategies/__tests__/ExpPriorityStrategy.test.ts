@@ -1,5 +1,4 @@
 import Process from "../../Process";
-import PriorityStrategy from "../PriorityStrategy";
 import type { ProcessStatistic } from "../../SchedulingStrategy";
 import ExpPriorityStrategy from "../ExpPriorityStrategy";
 import { describe, test, expect } from "vitest";
@@ -80,7 +79,7 @@ test("throws an error when not defining a priority in a process", () => {
     new Process("D", 4, 4),
   ];
 
-  expect(() => new PriorityStrategy(processes)).toThrow(
+  expect(() => new ExpPriorityStrategy(processes)).toThrow(
     "Every process must have a priority defined"
   );
 });
