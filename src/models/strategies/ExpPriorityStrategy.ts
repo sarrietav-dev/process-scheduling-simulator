@@ -55,21 +55,19 @@ class ExpPriorityStrategy implements SchedulingStrategy {
     let lastAttendedProcess: Process | undefined;
 
     while (this.unattendedProcesses.length !== this._processes.length) {
-      const spawnProcesses = this.getSpawnProcesses();
-
-      const unattendedProcesses = this.getUnattendedProcesses(spawnProcesses);
-
-      const highestPriorityProcess =
-        this.getHighestPriority(unattendedProcesses);
+      const highestPriorityProcess = this.getHighestPriorityProcess();
 
       if (lastAttendedProcess) {
-        if (
-          highestPriorityProcess !== lastAttendedProcess &&
+        const isProcessFinished =
           this.remainingCPUTimeTracker[
             this.remainingCPUTimeTracker.findIndex(
               (tracker) => tracker.processName === lastAttendedProcess!.name
             )
-          ].remainingCpuTime > 0
+          ].remainingCpuTime === 0;
+
+        if (
+          highestPriorityProcess !== lastAttendedProcess &&
+          !isProcessFinished
         ) {
           this.addStopToPreviousProcess(lastAttendedProcess);
         }
@@ -109,15 +107,25 @@ class ExpPriorityStrategy implements SchedulingStrategy {
     return this.processStatistics;
   }
 
-  private getUnattendedProcesses(spawnProcesses: Process[]): Process[] {
-    return spawnProcesses.filter(
-      (process) => !this.unattendedProcesses.includes(process)
-    );
+  private getHighestPriorityProcess(): Process {
+    const spawnProcesses = this.getSpawnProcesses();
+
+    const unattendedProcesses = this.getUnattendedProcesses(spawnProcesses);
+
+    const highestPriorityProcess = this.getHighestPriority(unattendedProcesses);
+
+    return highestPriorityProcess;
   }
 
   private getSpawnProcesses(): Process[] {
     return this._processes.filter(
       (process) => process.arrivalTime <= this.tick
+    );
+  }
+
+  private getUnattendedProcesses(spawnProcesses: Process[]): Process[] {
+    return spawnProcesses.filter(
+      (process) => !this.unattendedProcesses.includes(process)
     );
   }
 
