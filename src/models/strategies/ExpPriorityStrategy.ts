@@ -27,11 +27,19 @@ class ExpPriorityStrategy implements SchedulingStrategy {
 
   set processes(value: Process[]) {
     this._processes = value;
-    this.remainingCPUTimeTracker = value.map((process) => ({
+    this.remainingCPUTimeTracker = this.setCPUTrackers(value);
+    this.processStatistics = this.setProcessStatistics(value);
+  }
+
+  private setCPUTrackers(processes: Process[]) {
+    return processes.map((process) => ({
       processName: process.name,
       remainingCpuTime: process.cpuTime,
     }));
-    this.processStatistics = value.map((process) => ({
+  }
+
+  private setProcessStatistics(processes: Process[]) {
+    return processes.map((process) => ({
       process,
       startTime: [],
       waitTime: 0,
