@@ -54,7 +54,10 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   execute(): ProcessStatistic[] {
     let lastAttendedProcess: Process | undefined;
 
-    while (this.unattendedProcesses.length !== this._processes.length) {
+    const thereAreUnattendedProcesses =
+      this.unattendedProcesses.length !== this._processes.length;
+
+    while (thereAreUnattendedProcesses) {
       const highestPriorityProcess = this.getHighestPriorityProcess();
 
       if (lastAttendedProcess) {
