@@ -27,10 +27,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   }
 
   execute(): ProcessStatistic[] {
-    const areUnattendedProcesses =
-      this.attendedProcesses.length < this._processes.length;
-
-    while (areUnattendedProcesses) {
+    while (this.attendedProcesses.length < this._processes.length) {
       const process = this.getCurrentProcess();
 
       try {
@@ -70,10 +67,11 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   private getCurrentProcess() {
     const spawnProcesses = this.getSpawnProcesses();
     const unattendedProcesses = this.getUnattendedProcessesFrom(spawnProcesses);
-    const highestPriorityProcess =
-      this.getHighestPriorityFrom(unattendedProcesses);
-
-    return highestPriorityProcess;
+    try {
+      return this.getHighestPriorityFrom(unattendedProcesses);
+    } catch (e) {
+      return unattendedProcesses[0];
+    }
   }
 
   private getSpawnProcesses() {
