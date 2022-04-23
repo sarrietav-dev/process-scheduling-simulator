@@ -2,7 +2,11 @@
   <main
     class="flex h-screen flex-col justify-center bg-gradient-to-bl from-cyan-500 to-blue-500"
   >
-    <ScheduleTable class="mx-5 sm:m-24" v-if="schedulePage" />
+    <ScheduleTable
+      :stats="scheduler.execute"
+      class="mx-5 sm:m-24"
+      v-if="schedulePage"
+    />
     <TheProcessInputTable v-else>
       <template #run-button>
         <Button class="p-button-success" @click="showSchedule"
@@ -19,6 +23,9 @@ import TheProcessInputTable from "@/components/TheProcessInputTable/TheProcessIn
 import { ref } from "vue";
 import ScheduleTable from "@/components/TheScheduleTable.vue";
 import Button from "primevue/button";
+import { useScheduler } from "./stores/scheduler";
+
+const scheduler = useScheduler();
 
 const schedulePage = ref(false);
 

@@ -1,30 +1,31 @@
 import Process from "../../Process";
 import FiFoStrategy from "../FiFoStrategy";
+import { describe, test, expect, vi } from "vitest";
 
 describe("The algorithm works correctly", () => {
   const solution = [
     {
       process: { name: "A", cpuTime: 3, arrivalTime: 0 },
-      startTime: 0,
-      endTime: 3,
+      startTime: [0],
+      endTime: [3],
       waitTime: 0,
     },
     {
       process: { name: "B", cpuTime: 3, arrivalTime: 1 },
-      startTime: 3,
-      endTime: 6,
+      startTime: [3],
+      endTime: [6],
       waitTime: 2,
     },
     {
       process: { name: "C", cpuTime: 2, arrivalTime: 2 },
-      startTime: 6,
-      endTime: 8,
+      startTime: [6],
+      endTime: [8],
       waitTime: 4,
     },
     {
       process: { name: "D", cpuTime: 4, arrivalTime: 4 },
-      startTime: 8,
-      endTime: 12,
+      startTime: [8],
+      endTime: [12],
       waitTime: 4,
     },
   ];
@@ -72,7 +73,7 @@ describe("When accessing waitTimeAverage property", () => {
 
   test("calls execute() when it wasn't called before", () => {
     const strategy = new FiFoStrategy(processes);
-    const executeSpy = jest.spyOn(strategy, "execute");
+    const executeSpy = vi.spyOn(strategy, "execute");
     strategy.waitTimeAverage;
     expect(executeSpy).toBeCalled();
   });
@@ -80,7 +81,7 @@ describe("When accessing waitTimeAverage property", () => {
   test("doesn't call execute() when it was called before", () => {
     const strategy = new FiFoStrategy(processes);
     strategy.execute();
-    const executeSpy = jest.spyOn(strategy, "execute");
+    const executeSpy = vi.spyOn(strategy, "execute");
     strategy.waitTimeAverage;
     expect(executeSpy).not.toBeCalled();
   });

@@ -4,6 +4,7 @@ import type {
 } from "../SchedulingStrategy";
 import type Process from "../Process";
 import _ from "lodash";
+import { narrowNumber } from "@/utils/narrowNumber";
 
 class FiFoStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
@@ -33,10 +34,15 @@ class FiFoStrategy implements SchedulingStrategy {
 
       if (process === undefined) throw Error();
 
-      const endTime = startTime + process.cpuTime;
-      const waitTime = startTime - process.arrivalTime;
+      const endTime = narrowNumber(startTime) + process.cpuTime;
+      const waitTime = narrowNumber(startTime) - process.arrivalTime;
 
-      this.statsByProcess.push({ process, startTime, endTime, waitTime });
+      this.statsByProcess.push({
+        process,
+        startTime: [narrowNumber(startTime)],
+        endTime: [narrowNumber(endTime)],
+        waitTime,
+      });
       this.attendedProcesses.push(process);
     });
 
