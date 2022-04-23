@@ -12,7 +12,9 @@
         @row-edit-save="handleRowEdit"
       >
         <template #header>
-          <div class="flex flex-col justify-between gap-5 sm:flex-row sm:gap-0">
+          <div
+            class="flex flex-col justify-between gap-5 sm:flex-row sm:gap-0 sm:py-5"
+          >
             <div class="flex flex-col gap-5 sm:flex-row">
               <Dropdown
                 v-model="selectedStrategy"
@@ -21,6 +23,15 @@
                 optionValue="name"
                 placeholder="Schedule Strategy"
               />
+              <div
+                v-if="selectedStrategy === 'Priority'"
+                class="flex items-center space-x-5 sm:gap-5 sm:space-x-0"
+              >
+                <InputSwitch v-model="isPreemptive" class="inline" />
+                <span class="text-lg">
+                  {{ isPreemptive ? "Preemptive" : "Non-Preemptive" }}
+                </span>
+              </div>
               <slot name="run-button"></slot>
             </div>
             <Button
@@ -39,7 +50,11 @@
           style="width: 20%"
         >
           <template #editor="{ field, data }">
-            <component :is="column.component" v-model="data[field]" autofocus />
+            <component
+              :is="getComponent(column.field)"
+              v-model="data[field]"
+              autofocus
+            />
           </template>
         </Column>
         <Column
@@ -64,9 +79,11 @@ import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
+import InputSwitch from "primevue/inputswitch";
 import PriorityStrategy from "@/models/strategies/PriorityStrategy";
 import FiFoStrategy from "@/models/strategies/FiFoStrategy";
 import SJFStrategy from "@/models/strategies/SJFStrategy";
+import PreemptivePriorityStrategy from "@/models/strategies/PreemptivePriorityStrategy";
 
 const scheduler = useScheduler();
 
@@ -76,19 +93,27 @@ const columns = ref([
   {
     header: "Process Name",
     field: "name",
-    component: InputText,
   },
   {
     header: "Arrival Time",
     field: "arrivalTime",
-    component: InputNumber,
   },
   {
     header: "CPU Time",
     field: "cpuTime",
-    component: InputNumber,
   },
 ]);
+
+function getComponent(columnName: string) {
+  switch (columnName) {
+    case "name":
+      return InputText;
+    case "arrivalTime":
+    case "cpuTime":
+    case "priority":
+      return InputNumber;
+  }
+}
 
 function handleRowEdit(event: DataTableRowEditSaveEvent) {
   const { newData, index } = event;
@@ -110,6 +135,8 @@ function addProcess() {
   });
 }
 
+const isPreemptive = ref(false);
+
 const selectedStrategy = ref("");
 const strategies = ref([
   { name: "FiFo" },
@@ -117,17 +144,26 @@ const strategies = ref([
   { name: "Priority" },
 ]);
 
+watch(isPreemptive, (newValue) => {
+  scheduler.$patch((state) => {
+    state.strategy = newValue
+      ? new PreemptivePriorityStrategy(state.processes)
+      : new PriorityStrategy(state.processes);
+  });
+});
+
 watch(selectedStrategy, (newValue) => {
   switch (newValue) {
     case "Priority":
       columns.value.push({
         header: "Priority",
         field: "priority",
-        component: InputNumber,
       });
 
       scheduler.$patch((state) => {
-        state.strategy = new PriorityStrategy(state.processes);
+        state.strategy = isPreemptive.value
+          ? new PreemptivePriorityStrategy(state.processes)
+          : new PriorityStrategy(state.processes);
       });
       break;
     case "FiFo":
@@ -155,5 +191,9 @@ watch(selectedStrategy, (newValue) => {
   #add-process-button {
     width: 25%;
   }
+
+  /* .p-datatable-header {
+    padding: 10px !important;
+  } */
 }
 </style>
