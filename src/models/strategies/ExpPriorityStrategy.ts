@@ -162,6 +162,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   }
 
   get waitTimeAverage(): number {
+    if (this.attendedProcesses.length === 0) this.execute();
     return this.processStatisticsWrapper.getMeanWaitTime();
   }
 }

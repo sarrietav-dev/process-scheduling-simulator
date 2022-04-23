@@ -3,10 +3,10 @@ import type { ProcessStatistic } from "@/models/SchedulingStrategy";
 import _ from "lodash";
 
 class ProcessStatisticsWrapper {
-  readonly statistics: ProcessStatistic[];
+  private readonly _statistics: ProcessStatistic[];
 
   constructor(processes: Process[]) {
-    this.statistics = processes.map((process) => ({
+    this._statistics = processes.map((process) => ({
       process,
       startTime: [],
       waitTime: 0,
@@ -23,7 +23,7 @@ class ProcessStatisticsWrapper {
   }
 
   private getStatistic(process: Process) {
-    const statistic = this.statistics.find(
+    const statistic = this._statistics.find(
       (statistic) => statistic.process === process
     );
 
@@ -41,9 +41,9 @@ class ProcessStatisticsWrapper {
   }
 
   public getMeanWaitTime() {
-    for (const stat of this.statistics) this.setWaitTime(stat.process);
+    for (const stat of this._statistics) this.setWaitTime(stat.process);
 
-    return _.meanBy(this.statistics, (o) => o.waitTime);
+    return _.meanBy(this._statistics, (o) => o.waitTime);
   }
 
   private setWaitTime(process: Process) {
@@ -53,7 +53,7 @@ class ProcessStatisticsWrapper {
 
     const initialWaitTime = firstStartTime - process.arrivalTime;
 
-    const endTimes = statistic.endTime.slice(-1);
+    const endTimes = statistic.endTime.slice(0, -1);
 
     const restWaitTime = startTimes.reduce(
       (sum, time, index) => sum + (time - endTimes[index]),
@@ -61,6 +61,12 @@ class ProcessStatisticsWrapper {
     );
 
     statistic.waitTime = initialWaitTime + restWaitTime;
+  }
+
+  get statistics() {
+    for (const stat of this._statistics) this.setWaitTime(stat.process);
+
+    return this._statistics;
   }
 }
 
