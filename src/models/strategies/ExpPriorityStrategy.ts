@@ -4,194 +4,166 @@ import type {
   SchedulingStrategy,
 } from "../SchedulingStrategy";
 import _ from "lodash";
-
-// TODO: Refactor processStatistics and remainingCPUTimeTracker to be better acceced.
+import ProcessStatisticsWrapper from "./utils/ProcessStatisticsWrapper";
+import RemainingCPUTracker from "./utils/RemainingCPUTracker";
 
 class ExpPriorityStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
-  private processStatistics: ProcessStatistic[] = [];
-  private unattendedProcesses: Process[] = [];
-  private remainingCPUTimeTracker: {
-    processName: string;
-    remainingCpuTime: number;
-  }[] = [];
+  private processStatisticsWrapper!: ProcessStatisticsWrapper;
+  private attendedProcesses: Process[] = [];
+  private remainingCpuTracker!: RemainingCPUTracker;
   private tick = 0;
 
-  constructor(processes?: Process[]) {
-    if (processes) this.processes = processes;
+  constructor(processes: Process[]) {
+    this.processes = processes;
+  }
+
+  private set processes(processes: Process[]) {
+    if (processes.some((process) => process.priority === undefined))
+      throw Error("All processes must have the priority defined");
+    this._processes = processes;
+    this.processStatisticsWrapper = new ProcessStatisticsWrapper(processes);
+    this.remainingCpuTracker = new RemainingCPUTracker(processes);
+  }
+
+  execute(): ProcessStatistic[] {
+    while (this.attendedProcesses.length < this._processes.length) {
+      const process = this.getCurrentProcess();
+
+      try {
+        const nextProcess = this.getNextRelativeProcess(process);
+
+        const startTime = this.tick;
+
+        this.processStatisticsWrapper.appendStartTime(startTime, process);
+
+        const remainingCpuTime =
+          this.remainingCpuTracker.get(process).remainingCpuTime;
+
+        const doesFinish =
+          startTime + remainingCpuTime < nextProcess.arrivalTime;
+
+        // 1 is the greastest priority
+        const hasGreaterPriority = nextProcess.priority! > process.priority!;
+
+        if (!hasGreaterPriority && !doesFinish) {
+          this.tick = nextProcess.arrivalTime;
+          this.remainingCpuTracker.decrement(this.tick - startTime, process);
+          // continue;
+        } else {
+          this.tick = startTime + remainingCpuTime;
+          this.remainingCpuTracker.decrement(remainingCpuTime, process);
+          this.attendedProcesses.push(process);
+        }
+
+        this.processStatisticsWrapper.appendEndTime(this.tick, process);
+      } catch (e) {
+        this.endLastProcess(process);
+      }
+    }
+
+    return [];
+  }
+
+  private getCurrentProcess() {
+    const spawnProcesses = this.getSpawnProcesses();
+    const unattendedProcesses = this.getUnattendedProcessesFrom(spawnProcesses);
+    const highestPriorityProcess =
+      this.getHighestPriorityFrom(unattendedProcesses);
+
+    return highestPriorityProcess;
+  }
+
+  private getSpawnProcesses() {
+    return this._processes.filter(
+      (process) => process.arrivalTime <= this.tick
+    );
+  }
+
+  private getUnattendedProcessesFrom(processes: Process[]) {
+    return processes.filter(
+      (process) => !this.attendedProcesses.includes(process)
+    );
+  }
+
+  private getHighestPriorityFrom(processes: Process[]) {
+    let highestPriorityProcess = _.minBy(processes, (o) => o.priority);
+
+    if (!highestPriorityProcess) throw Error("highestPriorityProcess is null");
+
+    const repetitions = this.getHighestPriorityRepetitions(
+      highestPriorityProcess.priority!,
+      processes
+    );
+
+    if (repetitions.length > 1) {
+      highestPriorityProcess = _.minBy(repetitions, (o) => o.arrivalTime);
+
+      if (!highestPriorityProcess)
+        throw Error("highestPriorityProcess is null");
+    }
+
+    return highestPriorityProcess;
+  }
+
+  private getHighestPriorityRepetitions(
+    highestPriority: number,
+    processes: Process[]
+  ) {
+    return processes.filter((process) => process.priority === highestPriority);
+  }
+
+  private getNextRelativeProcess(process: Process): Process {
+    const nextProcesses = this._processes.filter(
+      (processItem) =>
+        process.arrivalTime < processItem.arrivalTime &&
+        !this.attendedProcesses.includes(processItem)
+    );
+
+    if (nextProcesses.length === 0) {
+      const spawnProcesses = this.getSpawnProcesses();
+      const unattendedProcesses =
+        this.getUnattendedProcessesFrom(spawnProcesses);
+
+      const unattendedProcessesWithoutCurrent = unattendedProcesses.filter(
+        (processItem) => processItem !== process
+      );
+
+      if (unattendedProcessesWithoutCurrent.length === 0)
+        throw new Error("This is the last process");
+
+      return this.getHighestPriorityFrom(unattendedProcessesWithoutCurrent);
+    }
+
+    const nextRelativeProcess = _.minBy(nextProcesses, (o) => o.arrivalTime);
+
+    if (!nextRelativeProcess)
+      throw new Error("The nextRelativeProcess is undefined");
+
+    return nextRelativeProcess;
+  }
+
+  private endLastProcess(process: Process) {
+    const startTime = this.tick;
+
+    this.processStatisticsWrapper.appendStartTime(startTime, process);
+
+    const remainingCpuTime =
+      this.remainingCpuTracker.get(process).remainingCpuTime;
+
+    this.tick = startTime + remainingCpuTime;
+    this.remainingCpuTracker.decrement(remainingCpuTime, process);
+    this.attendedProcesses.push(process);
+    this.processStatisticsWrapper.appendEndTime(this.tick, process);
   }
 
   setProcesses(processes: Process[]): void {
     this.processes = processes;
   }
 
-  set processes(value: Process[]) {
-    this._processes = value;
-    this.remainingCPUTimeTracker = this.setCPUTrackers(value);
-    this.processStatistics = this.setProcessStatistics(value);
-  }
-
-  private setCPUTrackers(processes: Process[]) {
-    return processes.map((process) => ({
-      processName: process.name,
-      remainingCpuTime: process.cpuTime,
-    }));
-  }
-
-  private setProcessStatistics(processes: Process[]) {
-    return processes.map((process) => ({
-      process,
-      startTime: [],
-      waitTime: 0,
-      endTime: [],
-    }));
-  }
-
   get waitTimeAverage(): number {
     return 1;
   }
-
-  execute(): ProcessStatistic[] {
-    let lastAttendedProcess: Process | undefined;
-
-    const thereAreUnattendedProcesses =
-      this.unattendedProcesses.length !== this._processes.length;
-
-    while (thereAreUnattendedProcesses) {
-      const highestPriorityProcess = this.getHighestPriorityProcess();
-
-      if (lastAttendedProcess) {
-        const isProcessFinished =
-          this.remainingCPUTimeTracker[
-            this.remainingCPUTimeTracker.findIndex(
-              (tracker) => tracker.processName === lastAttendedProcess!.name
-            )
-          ].remainingCpuTime === 0;
-
-        if (
-          highestPriorityProcess !== lastAttendedProcess &&
-          !isProcessFinished
-        ) {
-          this.addStopToPreviousProcess(lastAttendedProcess);
-        }
-      }
-
-      const currentProcessStats = this.processStatistics.find(
-        (stat) => stat.process === highestPriorityProcess
-      )!;
-
-      const isFirstTimeRunning = currentProcessStats.startTime.length === 0;
-      const wasSuspendedBefore = currentProcessStats.endTime.length > 0;
-
-      if (isFirstTimeRunning || wasSuspendedBefore) {
-        currentProcessStats.startTime.push(this.tick);
-      }
-
-      const remainingTime = this.decreaseRemainingTime(highestPriorityProcess);
-
-      if (remainingTime === 0) {
-        currentProcessStats.endTime.push(this.tick);
-
-        currentProcessStats.waitTime = this.calculateWaitTimeOfProcess(
-          highestPriorityProcess
-        );
-
-        this.unattendedProcesses.push(highestPriorityProcess);
-      }
-
-      lastAttendedProcess = highestPriorityProcess;
-
-      this.nextTick();
-    }
-
-    return this.processStatistics;
-  }
-
-  private getHighestPriorityProcess(): Process {
-    const spawnProcesses = this.getSpawnProcesses();
-
-    const unattendedProcesses = this.getUnattendedProcesses(spawnProcesses);
-
-    const highestPriorityProcess = this.getHighestPriority(unattendedProcesses);
-
-    return highestPriorityProcess;
-  }
-
-  private getSpawnProcesses(): Process[] {
-    return this._processes.filter(
-      (process) => process.arrivalTime <= this.tick
-    );
-  }
-
-  private getUnattendedProcesses(spawnProcesses: Process[]): Process[] {
-    return spawnProcesses.filter(
-      (process) => !this.unattendedProcesses.includes(process)
-    );
-  }
-
-  private getHighestPriority(processes: Process[]): Process {
-    const highestPriorityProcess = _.minBy(processes, "priority");
-
-    if (!highestPriorityProcess) throw Error("highestPriorityProcess is null");
-
-    const duplicatedPriorities = processes.filter(
-      (process) => process.priority === highestPriorityProcess.priority
-    );
-
-    if (duplicatedPriorities.length > 1) {
-      return _.minBy(duplicatedPriorities, "arrivalTime")!;
-    }
-
-    return highestPriorityProcess;
-  }
-
-  private addStopToPreviousProcess(lastAttendedProcess: Process) {
-    const lastAttendedProcessIndex = this.processStatistics.findIndex(
-      (statistic) => statistic.process.name === lastAttendedProcess?.name
-    );
-
-    this.processStatistics[lastAttendedProcessIndex].endTime = [
-      ...this.processStatistics[lastAttendedProcessIndex].endTime,
-      this.tick,
-    ];
-  }
-
-  private decreaseRemainingTime(process: Process) {
-    const processTrackerIndex = this.remainingCPUTimeTracker.findIndex(
-      (processTracker) => process.name === processTracker.processName
-    );
-
-    return --this.remainingCPUTimeTracker[processTrackerIndex].remainingCpuTime;
-  }
-
-  private calculateWaitTimeOfProcess(process: Process) {
-    const processStats = this.processStatistics.find(
-      (stat) => stat.process === process
-    )!;
-
-    const initialWaitTime = process.arrivalTime - processStats.startTime[0];
-
-    // Has the process been suspended before?
-    if (processStats.endTime.length > 1) {
-      const startTimesWithoutFirst = processStats.startTime.slice(1);
-
-      const suspendedWaitTimes = startTimesWithoutFirst.reduce(
-        (prev, current, index) =>
-          prev + (current + processStats.endTime[index]),
-        0
-      );
-
-      return initialWaitTime + suspendedWaitTimes;
-    }
-
-    return initialWaitTime;
-  }
-
-  private nextTick() {
-    this.tick++;
-  }
 }
-
-// 0, 4, 8 / 2, 6, 9
 
 export default ExpPriorityStrategy;
