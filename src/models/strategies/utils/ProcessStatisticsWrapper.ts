@@ -3,7 +3,7 @@ import type { ProcessStatistic } from "@/models/SchedulingStrategy";
 import _ from "lodash";
 
 class ProcessStatisticsWrapper {
-  private statistics: ProcessStatistic[];
+  readonly statistics: ProcessStatistic[];
 
   constructor(processes: Process[]) {
     this.statistics = processes.map((process) => ({
