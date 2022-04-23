@@ -68,7 +68,7 @@ test("the average computes correctly", () => {
 
   const strategy = new ExpPriorityStrategy(processes);
 
-  expect(strategy.waitTimeAverage).toBe(4);
+  expect(strategy.waitTimeAverage).toBe(3.5);
 });
 
 test("throws an error when not defining a priority in a process", () => {
