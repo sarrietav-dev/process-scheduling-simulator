@@ -1,5 +1,6 @@
 import type Process from "@/models/Process";
 import type { ProcessStatistic } from "@/models/SchedulingStrategy";
+import _ from "lodash";
 
 class ProcessStatisticsWrapper {
   private statistics: ProcessStatistic[];
@@ -37,6 +38,12 @@ class ProcessStatisticsWrapper {
     statistic.endTime.push(time);
 
     return [...statistic.endTime];
+  }
+
+  public getMeanWaitTime() {
+    for (const stat of this.statistics) this.setWaitTime(stat.process);
+
+    return _.meanBy(this.statistics, (o) => o.waitTime);
   }
 
   private setWaitTime(process: Process) {
