@@ -61,7 +61,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
       }
     }
 
-    return [];
+    return this.processStatisticsWrapper.statistics;
   }
 
   private getCurrentProcess() {
