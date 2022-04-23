@@ -7,7 +7,7 @@ import _ from "lodash";
 import ProcessStatisticsWrapper from "./utils/ProcessStatisticsWrapper";
 import RemainingCPUTracker from "./utils/RemainingCPUTracker";
 
-class ExpPriorityStrategy implements SchedulingStrategy {
+class PreemptivePriorityStrategy implements SchedulingStrategy {
   private _processes: Process[] = [];
   private processStatisticsWrapper!: ProcessStatisticsWrapper;
   private attendedProcesses: Process[] = [];
@@ -170,4 +170,4 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   }
 }
 
-export default ExpPriorityStrategy;
+export default PreemptivePriorityStrategy;

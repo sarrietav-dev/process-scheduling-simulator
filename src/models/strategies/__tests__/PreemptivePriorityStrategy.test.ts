@@ -1,6 +1,6 @@
 import Process from "../../Process";
 import type { ProcessStatistic } from "../../SchedulingStrategy";
-import ExpPriorityStrategy from "../ExpPriorityStrategy";
+import PreemptivePriorityStrategy from "../PreemptivePriorityStrategy";
 import { describe, test, expect } from "vitest";
 
 describe("The algorithm works correctly", () => {
@@ -39,7 +39,7 @@ describe("The algorithm works correctly", () => {
       new Process("P4", 4, 6, 1),
     ];
 
-    const strategy = new ExpPriorityStrategy(processes);
+    const strategy = new PreemptivePriorityStrategy(processes);
 
     expect(strategy.execute()).toEqual(results);
   });
@@ -52,7 +52,7 @@ describe("The algorithm works correctly", () => {
       new Process("P2", 3, 2, 1),
     ];
 
-    const strategy = new ExpPriorityStrategy(processes);
+    const strategy = new PreemptivePriorityStrategy(processes);
 
     expect(strategy.execute()).toEqual(results);
   });
@@ -66,7 +66,7 @@ test("the average computes correctly", () => {
     new Process("P2", 3, 2, 1),
   ];
 
-  const strategy = new ExpPriorityStrategy(processes);
+  const strategy = new PreemptivePriorityStrategy(processes);
 
   expect(strategy.waitTimeAverage).toBe(3.5);
 });
@@ -79,7 +79,7 @@ test("throws an error when not defining a priority in a process", () => {
     new Process("D", 4, 4),
   ];
 
-  expect(() => new ExpPriorityStrategy(processes)).toThrow(
+  expect(() => new PreemptivePriorityStrategy(processes)).toThrow(
     "Every process must have a priority defined"
   );
 });
