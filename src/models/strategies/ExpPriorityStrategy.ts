@@ -49,7 +49,6 @@ class ExpPriorityStrategy implements SchedulingStrategy {
         if (!hasGreaterPriority && !doesFinish) {
           this.tick = nextProcess.arrivalTime;
           this.remainingCpuTracker.decrement(this.tick - startTime, process);
-          // continue;
         } else {
           this.tick = startTime + remainingCpuTime;
           this.remainingCpuTracker.decrement(remainingCpuTime, process);
@@ -162,7 +161,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   }
 
   get waitTimeAverage(): number {
-    return 1;
+    return this.processStatisticsWrapper.getMeanWaitTime();
   }
 }
 
