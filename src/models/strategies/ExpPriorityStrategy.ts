@@ -20,7 +20,7 @@ class ExpPriorityStrategy implements SchedulingStrategy {
 
   private set processes(processes: Process[]) {
     if (processes.some((process) => process.priority === undefined))
-      throw Error("All processes must have the priority defined");
+      throw Error("Every process must have a priority defined");
     this._processes = processes;
     this.processStatisticsWrapper = new ProcessStatisticsWrapper(processes);
     this.remainingCpuTracker = new RemainingCPUTracker(processes);
