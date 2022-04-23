@@ -16,25 +16,44 @@ class ProcessStatisticsWrapper {
   public appendStartTime(time: number, process: Process) {
     const statistic = this.getStatistic(process);
 
-    if (!statistic) throw new Error("The process isn't doesn't exist");
-
     statistic.startTime.push(time);
 
     return [...statistic.startTime];
   }
 
-  public appendEndTime(time: number, process: Process) {
-    const statistic = this.getStatistic(process);
+  private getStatistic(process: Process) {
+    const statistic = this.statistics.find(
+      (statistic) => statistic.process === process
+    );
 
     if (!statistic) throw new Error("The process isn't doesn't exist");
+
+    return statistic;
+  }
+
+  public appendEndTime(time: number, process: Process) {
+    const statistic = this.getStatistic(process);
 
     statistic.endTime.push(time);
 
     return [...statistic.endTime];
   }
 
-  private getStatistic(process: Process) {
-    return this.statistics.find((statistic) => statistic.process === process);
+  private setWaitTime(process: Process) {
+    const statistic = this.getStatistic(process);
+
+    const [firstStartTime, ...startTimes] = statistic.startTime;
+
+    const initialWaitTime = firstStartTime - process.arrivalTime;
+
+    const endTimes = statistic.endTime.slice(-1);
+
+    const restWaitTime = startTimes.reduce(
+      (sum, time, index) => sum + (time - endTimes[index]),
+      0
+    );
+
+    statistic.waitTime = initialWaitTime + restWaitTime;
   }
 }
 
