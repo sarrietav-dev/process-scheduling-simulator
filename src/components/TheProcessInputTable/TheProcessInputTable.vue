@@ -191,5 +191,9 @@ watch(selectedStrategy, (newValue) => {
   #add-process-button {
     width: 25%;
   }
+
+  /* .p-datatable-header {
+    padding: 10px !important;
+  } */
 }
 </style>
