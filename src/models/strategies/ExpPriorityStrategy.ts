@@ -21,9 +21,16 @@ class ExpPriorityStrategy implements SchedulingStrategy {
   private set processes(processes: Process[]) {
     if (processes.some((process) => process.priority === undefined))
       throw Error("Every process must have a priority defined");
-    this._processes = processes;
-    this.processStatisticsWrapper = new ProcessStatisticsWrapper(processes);
-    this.remainingCpuTracker = new RemainingCPUTracker(processes);
+
+    this._processes = _.sortBy(processes, (o) => o.arrivalTime);
+    this.processStatisticsWrapper = new ProcessStatisticsWrapper(
+      this._processes
+    );
+    this.remainingCpuTracker = new RemainingCPUTracker(this._processes);
+  }
+
+  setProcesses(processes: Process[]): void {
+    this.processes = processes;
   }
 
   execute(): ProcessStatistic[] {
@@ -155,10 +162,6 @@ class ExpPriorityStrategy implements SchedulingStrategy {
     this.remainingCpuTracker.decrement(remainingCpuTime, process);
     this.attendedProcesses.push(process);
     this.processStatisticsWrapper.appendEndTime(this.tick, process);
-  }
-
-  setProcesses(processes: Process[]): void {
-    this.processes = processes;
   }
 
   get waitTimeAverage(): number {
