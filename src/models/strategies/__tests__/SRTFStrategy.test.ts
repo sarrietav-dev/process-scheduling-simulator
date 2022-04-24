@@ -38,4 +38,16 @@ describe("The SRTF strategy", () => {
 
     expect(strategy.execute()).toStrictEqual(results);
   });
+
+  test("works correctly when unordered", () => {
+    const strategy = new SRTFStrategy([...processes].reverse());
+
+    expect(strategy.execute()).toStrictEqual(results);
+  });
+
+  test("calculates the wait time mean correctly", () => {
+    const strategy = new SRTFStrategy([...processes].reverse());
+
+    expect(strategy.waitTimeAverage).toBe(1.5);
+  });
 });
