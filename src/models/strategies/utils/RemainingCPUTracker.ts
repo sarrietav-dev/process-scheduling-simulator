@@ -1,7 +1,12 @@
 import type Process from "@/models/Process";
 
+export interface ProcessCPUTracker {
+  process: Process;
+  remainingCpuTime: number;
+}
+
 class RemainingCPUTracker {
-  private tracker: { process: Process; remainingCpuTime: number }[];
+  readonly tracker: ProcessCPUTracker[];
 
   constructor(processes: Process[]) {
     this.tracker = processes.map((process) => ({
