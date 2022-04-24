@@ -16,8 +16,8 @@ class SRTFStrategy implements SchedulingStrategy {
   private remainingCpuTracker!: RemainingCPUTracker;
   private tick = 0;
 
-  constructor(processes: Process[]) {
-    this.processes = processes;
+  constructor(processes?: Process[]) {
+    if (processes) this.processes = processes;
   }
 
   private set processes(processes: Process[]) {

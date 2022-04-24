@@ -84,6 +84,8 @@ import PriorityStrategy from "@/models/strategies/PriorityStrategy";
 import FiFoStrategy from "@/models/strategies/FiFoStrategy";
 import SJFStrategy from "@/models/strategies/SJFStrategy";
 import PreemptivePriorityStrategy from "@/models/strategies/PreemptivePriorityStrategy";
+import SRTFStrategy from "@/models/strategies/SRTFStrategy";
+import type { SchedulingStrategy } from "@/models/SchedulingStrategy";
 
 const scheduler = useScheduler();
 
@@ -141,6 +143,7 @@ const selectedStrategy = ref("");
 const strategies = ref([
   { name: "FiFo" },
   { name: "SJF" },
+  { name: "SRTF" },
   { name: "Priority" },
 ]);
 
@@ -167,21 +170,24 @@ watch(selectedStrategy, (newValue) => {
       });
       break;
     case "FiFo":
-      columns.value = columns.value.filter(
-        (column) => column.field !== "priority"
-      );
-      scheduler.$patch((state) => {
-        state.strategy = new FiFoStrategy(state.processes);
-      });
+      setNonPrioritableStrategy(new FiFoStrategy());
       break;
     case "SJF":
-      columns.value = columns.value.filter(
-        (column) => column.field !== "priority"
-      );
-      scheduler.$patch((state) => {
-        state.strategy = new SJFStrategy(state.processes);
-      });
+      setNonPrioritableStrategy(new SJFStrategy());
       break;
+    case "SRTF":
+      setNonPrioritableStrategy(new SRTFStrategy());
+      break;
+  }
+
+  function setNonPrioritableStrategy(strategy: SchedulingStrategy) {
+    columns.value = columns.value.filter(
+      (column) => column.field !== "priority"
+    );
+    scheduler.$patch((state) => {
+      strategy.setProcesses(state.processes);
+      state.strategy = strategy;
+    });
   }
 });
 </script>
