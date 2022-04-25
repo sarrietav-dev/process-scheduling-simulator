@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@types/jsdom": "^16.2.14",
+    "@vuelidate/core": "^2.0.0-alpha.40",
+    "@vuelidate/validators": "^2.0.0-alpha.28",
     "jsdom": "^19.0.0",
     "lodash": "^4.17.21",
     "pinia": "^2.0.13",
