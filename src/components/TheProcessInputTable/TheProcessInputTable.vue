@@ -29,7 +29,7 @@
               >
                 <InputSwitch v-model="isPreemptive" class="inline" />
                 <span class="text-lg">
-                  {{ isPreemptive ? "Preemptive" : "Non-Preemptive" }}
+                  {{ isPreemptive ? "Expropiativa" : "No Expropiativa" }}
                 </span>
               </div>
               <slot name="run-button"></slot>
@@ -38,7 +38,7 @@
               id="add-process-button"
               class="p-button-info w-1/4 grow sm:grow-0"
               @click="addProcess"
-              >Add process</Button
+              >Agregar Proceso</Button
             >
           </div>
         </template>
@@ -93,15 +93,15 @@ const editingRows = ref([]);
 
 const columns = ref([
   {
-    header: "Process Name",
+    header: "Nombre",
     field: "name",
   },
   {
-    header: "Arrival Time",
+    header: "Tiempo Llegada",
     field: "arrivalTime",
   },
   {
-    header: "CPU Time",
+    header: "Tiempo de CPU",
     field: "cpuTime",
   },
 ]);
@@ -144,7 +144,7 @@ const strategies = ref([
   { name: "FiFo" },
   { name: "SJF" },
   { name: "SRTF" },
-  { name: "Priority" },
+  { name: "Prioridad" },
 ]);
 
 watch(isPreemptive, (newValue) => {

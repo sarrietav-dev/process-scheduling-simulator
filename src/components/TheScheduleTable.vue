@@ -1,13 +1,13 @@
 <template>
   <div class="card">
     <DataTable :value="stats" responsive-layout="scroll" scrollable>
-      <Column header="Name" field="name"></Column>
-      <Column header="ArrivalTime" field="arrivalTime"></Column>
-      <Column header="CPU Time" field="cpuTime"></Column>
-      <Column header="Priority" field="priority"></Column>
-      <Column header="Start time" field="startTime"></Column>
-      <Column header="End time" field="endTime"></Column>
-      <Column header="Wait time" field="waitTime"></Column>
+      <Column header="Nombre" field="name"></Column>
+      <Column header="Tiempo de Llegada" field="arrivalTime"></Column>
+      <Column header="Tiempo de CPU" field="cpuTime"></Column>
+      <Column header="Prioridad" field="priority"></Column>
+      <Column header="Tiempo de Inicio" field="startTime"></Column>
+      <Column header="Tiempo de Fin" field="endTime"></Column>
+      <Column header="Tiempo de Espera" field="waitTime"></Column>
     </DataTable>
   </div>
 </template>

@@ -10,7 +10,7 @@
     <TheProcessInputTable v-else>
       <template #run-button>
         <Button class="p-button-success" @click="showSchedule"
-          >Run scheduler</Button
+          >Iniciar Planificador</Button
         >
       </template>
     </TheProcessInputTable>
