@@ -21,7 +21,7 @@
                 :options="strategies"
                 optionLabel="name"
                 optionValue="name"
-                placeholder="Schedule Strategy"
+                placeholder="Estrategia de Planeacion"
               />
               <div
                 v-if="selectedStrategy === 'Priority'"
