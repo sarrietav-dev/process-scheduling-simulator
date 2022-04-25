@@ -8,7 +8,7 @@ class Process {
     name: string,
     cpuTime: number,
     arrivalTime: number,
-    priority?: number
+    priority = 1
   ) {
     this.name = name;
     this.cpuTime = cpuTime;
